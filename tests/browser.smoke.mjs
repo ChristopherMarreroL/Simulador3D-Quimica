@@ -1,0 +1,52 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || 'C:/Users/chris/AppData/Local/ms-playwright/chromium-1248/chrome-win64/chrome.exe', headless: true, args: ['--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
+page.setDefaultTimeout(15000);
+const errors = []; page.on('pageerror', e => errors.push(e.message));
+try {
+  await page.goto(process.env.BASE_URL || 'http://127.0.0.1:5173');
+  await page.getByRole('heading', { name: 'La química, en tus manos.' }).waitFor();
+  await page.waitForTimeout(2000);
+  await page.screenshot({ path: 'test-results/bienvenida.png' });
+  await page.getByRole('button', { name: /Práctica guiada/ }).click();
+  await page.getByRole('heading', { name: 'Da tus primeros pasos' }).waitFor();
+  await page.getByRole('button', { name: 'Entrar al laboratorio' }).click();
+  await page.waitForFunction(() => !!document.pointerLockElement);
+  await page.keyboard.down('KeyW');
+  await page.getByRole('heading', { name: 'Mira a tu alrededor' }).waitFor();
+  await page.keyboard.up('KeyW');
+  await page.mouse.move(400, 400); await page.mouse.move(700, 400);
+  await page.getByRole('heading', { name: 'Encuentra el vaso' }).waitFor();
+  await page.screenshot({ path: 'test-results/laboratorio.png' });
+  await page.keyboard.press('Escape');
+  // Fixture setup: unit tests cover the progression; this checks rendered station UI.
+  await page.evaluate(async () => {
+    const moduleUrl = performance.getEntriesByType('resource').find(r => new URL(r.name).pathname === '/src/state/lab.ts')?.name; const { useLab } = await import(moduleUrl || '/src/state/lab.ts');
+    useLab.setState({ tutorialDone: true }); useLab.getState().start('free');
+    useLab.setState({ locations: { beaker: 'bench', vinegar: 'right', bicarbonate: 'left' } });
+    useLab.getState().open('station');
+  });
+  assert.equal(await page.getByRole('button', { name: 'Añadir', exact: true }).isEnabled(), false);
+  await page.getByRole('spinbutton', { name: 'Cantidad (mL)' }).fill('0');
+  assert.equal(await page.getByRole('button', { name: 'Verter', exact: true }).isEnabled(), false);
+  await page.getByRole('spinbutton', { name: 'Cantidad (mL)' }).fill('50');
+  await page.getByRole('button', { name: 'Verter', exact: true }).click();
+  await page.waitForTimeout(2000);
+  await page.evaluate(async () => { const moduleUrl = performance.getEntriesByType('resource').find(r => new URL(r.name).pathname === '/src/state/lab.ts')?.name; const { useLab } = await import(moduleUrl || '/src/state/lab.ts'); useLab.getState().open('station'); });
+  await page.getByRole('button', { name: 'Añadir', exact: true }).click();
+  await page.waitForTimeout(2000);
+  await page.evaluate(async () => { const moduleUrl = performance.getEntriesByType('resource').find(r => new URL(r.name).pathname === '/src/state/lab.ts')?.name; const { useLab } = await import(moduleUrl || '/src/state/lab.ts'); useLab.getState().open('results'); });
+  await page.getByText('41,5', { exact: false }).first().waitFor();
+  await page.getByRole('textbox', { name: 'Tu observación' }).fill('Efervescencia visible y liberación de gas.');
+  await page.screenshot({ path: 'test-results/resultados.png' });
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('experimenta.records.v1')));
+  assert.equal(saved.at(-1).observation, 'Efervescencia visible y liberación de gas.');
+  await page.getByRole('button', { name: 'Volver al laboratorio' }).click();
+  await page.getByRole('button', { name: 'Volver al inicio', exact: true }).click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'test-results/movil.png' });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  assert.deepEqual(errors, []);
+  console.log('OK: render 3D, tutorial de movimiento y cámara, estación, validaciones, cálculo, persistencia y menú móvil.');
+} catch (error) { await page.screenshot({ path: 'test-results/fallo.png' }); console.log(await page.evaluate(async () => { const moduleUrl = performance.getEntriesByType('resource').find(r => new URL(r.name).pathname === '/src/state/lab.ts')?.name; const { useLab } = await import(moduleUrl || '/src/state/lab.ts'); const s = useLab.getState(); return { tutorial: s.tutorial, moved: s.moved, looked: s.looked, locked: s.locked, message: s.message }; })); throw error; } finally { await browser.close(); }
