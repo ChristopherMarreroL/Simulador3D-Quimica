@@ -78,7 +78,7 @@ export class Jugador {
     }
   }
 
-  conectar(elemento: HTMLElement, acciones: { usar: (pulsado: boolean, tecla: boolean) => void; dejar: () => void; mano: (m: Hand) => void; anotar: () => void; misiones: () => void; pausa: () => void }) {
+  conectar(elemento: HTMLElement, acciones: { usar: (pulsado: boolean, tecla: boolean) => void; dejar: () => void; mano: (m: Hand) => void; anotar: () => void; misiones: () => void; pistas: () => void; pausa: () => void }) {
     document.addEventListener('keydown', e => {
       if (document.pointerLockElement !== elemento) return;
       if (e.repeat) { if (e.code !== 'KeyE') this.teclas.add(e.code); return; }
@@ -89,6 +89,7 @@ export class Jugador {
       else if (e.code === 'Digit2') acciones.mano('right');
       else if (e.code === 'KeyN') acciones.anotar();
       else if (e.code === 'KeyM') acciones.misiones();
+      else if (e.code === 'KeyH') acciones.pistas();
       else if (e.code === 'KeyP') acciones.pausa();
     });
     document.addEventListener('keyup', e => { this.teclas.delete(e.code); });

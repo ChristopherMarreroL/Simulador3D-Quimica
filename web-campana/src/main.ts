@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { useHood } from '../../src/state/hood';
 import { useLab } from '../../src/state/lab';
 import { cargarEscena } from './escena';
+import { calcularGuia } from './guia';
 import { Hud } from './hud';
 import { Jugador } from './jugador';
 import { Objetos } from './objetos';
@@ -71,6 +72,7 @@ async function arrancar() {
     mano: m => partida.cambiarMano(m),
     anotar: () => partida.anotar(),
     misiones: () => hud.abrirMisiones(),
+    pistas: () => hud.alternarPistas(),
     pausa: () => document.exitPointerLock(),
   });
   hud.listo();
@@ -84,9 +86,24 @@ async function arrancar() {
     objetivo = jugador.apuntar(objetos.zonas, sala.oclusores);
     partida.apuntar(objetivo);
     partida.avanzar(dt);
-    const pasos = partida.pasos();
-    objetos.actualizar(t, dt, jugador.anclas, objetivo, pasos, jugador.vertiendoMano);
+    // Guía: flecha sobre el objeto del paso y, si queda fuera de la vista, indicador en el borde de la pantalla.
+    const guia = calcularGuia(partida);
+    objetos.actualizar(t, dt, jugador.anclas, objetivo, guia.objetivo ? [guia.objetivo] : [], jugador.vertiendoMano);
+    const punto = guia.objetivo ? objetos.encima(guia.objetivo) : null;
+    let senal: { x: number; y: number; fuera: boolean; angulo: number; metros: number } | null = null;
+    if (punto) {
+      const cam = jugador.camara;
+      const local = punto.clone().applyMatrix4(cam.matrixWorldInverse);
+      const ndc = punto.clone().project(cam);
+      const fuera = local.z > 0 || Math.abs(ndc.x) > 0.92 || Math.abs(ndc.y) > 0.88;
+      const angulo = Math.atan2(-local.y, local.x);            // en pantalla: x a la derecha, y hacia abajo
+      const radio = 0.4;
+      senal = fuera
+        ? { x: 0.5 + Math.cos(angulo) * radio * Math.min(1, window.innerHeight / window.innerWidth * 1.6), y: 0.5 + Math.sin(angulo) * radio, fuera, angulo, metros: cam.position.distanceTo(punto) }
+        : { x: ndc.x / 2 + 0.5, y: 0.5 - ndc.y / 2, fuera, angulo, metros: cam.position.distanceTo(punto) };
+    }
     hud.actualizar(partida, objetivo, objetos.suspension);
+    hud.guiar(guia, senal, objetivo);
     renderer.render(escena, jugador.camara);
     // Medidor de fotogramas (pausa y recorrido automático).
     fps.cuadros++; fps.tiempos.push(dt * 1000); if (fps.tiempos.length > 600) fps.tiempos.shift();

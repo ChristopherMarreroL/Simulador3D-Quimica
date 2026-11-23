@@ -3,6 +3,7 @@ import { hoodRecipes } from '../../src/experiments/hoodRecipes';
 import { amountText, useHood, type Hand } from '../../src/state/hood';
 import { useLab } from '../../src/state/lab';
 import { NOMBRES } from './objetos';
+import type { Guia } from './guia';
 import type { Partida } from './partida';
 import { PERFILES, type Calidad } from './util';
 
@@ -23,6 +24,9 @@ export class Hud {
       <div class="aviso" data-k="aviso"></div>
       <section class="tarea" data-k="tarea"></section>
       <div class="reaccion" data-k="reaccion" hidden></div>
+      <section class="pista" data-k="pista"></section>
+      <div class="senal" data-k="senal" hidden><i data-k="senalFlecha">▼</i><b data-k="senalTexto"></b></div>
+      <div class="medidor" data-k="medidor" hidden></div>
       <div class="mensaje" data-k="mensaje"></div>
       <div class="manos" data-k="manos"></div>
       <div class="pantalla-matraz" data-k="matraz"></div>
@@ -35,7 +39,7 @@ export class Hud {
         <ul class="controles">
           <li><b>WASD</b> caminar · <b>Mayús</b> rápido · <b>ratón</b> mirar</li>
           <li><b>E</b> o <b>clic</b> usar · <b>mantener el clic</b> para verter de un frasco · <b>Q</b> dejar</li>
-          <li><b>1 / 2</b> mano izquierda / derecha · <b>M</b> misiones · <b>N</b> anotar · <b>clic derecho</b> mirar de cerca</li>
+          <li><b>1 / 2</b> mano izquierda / derecha · <b>M</b> misiones · <b>H</b> pistas · <b>N</b> anotar · <b>clic derecho</b> mirar de cerca</li>
           <li><b>Esc</b> pausa</li>
         </ul>
       </section>
@@ -92,6 +96,31 @@ export class Hud {
     this.raiz.classList.toggle('en-pausa', visible);
   }
   fps(texto: string) { this.el.fps.textContent = texto; }
+
+  private pistasVisibles = true;
+  alternarPistas() { this.pistasVisibles = !this.pistasVisibles; }
+  /** Pista del paso actual, señal hacia el objeto y medidor de la cantidad en curso. */
+  guiar(g: Guia, senal: { x: number; y: number; fuera: boolean; angulo: number; metros: number } | null, objetivo: string | null) {
+    this.poner('pista', this.pistasVisibles
+      ? `<h4>Qué hacer ahora <kbd>H</kbd></h4><b>${esc(g.titulo)}</b><ol>${g.lineas.map(l => `<li>${esc(l)}</li>`).join('')}</ol>`
+      : '<h4>Pistas ocultas <kbd>H</kbd></h4>');
+    const ver = !!senal && this.pistasVisibles;
+    this.el.senal.hidden = !ver;
+    if (ver) {
+      this.el.senal.style.transform = `translate(${(senal!.x * window.innerWidth).toFixed(0)}px, ${(senal!.y * window.innerHeight).toFixed(0)}px) translate(-50%, -100%)`;
+      this.el.senal.classList.toggle('fuera', senal!.fuera);
+      this.el.senalFlecha.style.transform = senal!.fuera ? `rotate(${(senal!.angulo - Math.PI / 2).toFixed(2)}rad)` : '';
+      const texto = `${g.etiqueta}${senal!.fuera || senal!.metros > 2.5 ? ` · ${senal!.metros.toFixed(0)} m` : ''}`;
+      if (this.el.senalTexto.textContent !== texto) this.el.senalTexto.textContent = texto;
+    }
+    const m = g.medidor;
+    const verMedidor = !!m && (m.valor > 0 || objetivo === g.objetivo);
+    this.el.medidor.hidden = !verMedidor;
+    if (verMedidor) {
+      const pct = Math.min(100, 100 * m!.valor / m!.meta), listo = m!.valor >= m!.meta * 0.9, pasado = m!.valor > m!.meta * 1.25;
+      this.poner('medidor', `<b class="${pasado ? 'pasado' : listo ? 'listo' : ''}">${fmt(m!.valor, m!.decimales)} / ${fmt(m!.meta, m!.decimales)} ${m!.unidad}</b><div class="barra"><i style="width:${pct.toFixed(0)}%"></i></div><span>${pasado ? 'Te has pasado, pero puedes seguir' : listo ? 'Cantidad correcta: suelta el clic' : 'Mantén el clic'}</span>`);
+    }
+  }
 
   private nombre(objetivo: string) {
     if (objetivo.startsWith('reagent:')) { const r = reagents[objetivo.slice(8) as ReagentId]; return `${r.name} · ${r.formula}`; }

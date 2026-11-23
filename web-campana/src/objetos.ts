@@ -462,11 +462,12 @@ export class Objetos {
 
     // Marcas de guía «V» sobre los objetivos del paso actual.
     const marcaTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d')!; g.fillStyle = '#ffb02e'; g.beginPath(); g.moveTo(8, 14); g.lineTo(56, 14); g.lineTo(32, 54); g.closePath(); g.fill(); g.strokeStyle = '#3a2400'; g.lineWidth = 3; g.stroke(); return new THREE.CanvasTexture(c); })();
-    const marcaMat = new THREE.SpriteMaterial({ map: marcaTex, depthTest: false, transparent: true });
+    // Tamaño constante en pantalla: la flecha se ve igual de grande desde la otra punta del laboratorio.
+    const marcaMat = new THREE.SpriteMaterial({ map: marcaTex, depthTest: false, transparent: true, sizeAttenuation: false });
     for (const id of this.objetos.keys()) {
       if (id.startsWith('amb:')) continue;
       const s = new THREE.Sprite(marcaMat);
-      s.scale.setScalar(0.05); s.visible = false; s.renderOrder = 20;
+      s.scale.setScalar(0.07); s.visible = false; s.renderOrder = 20;
       this.raiz.add(s); this.marcas.set(id, s);
     }
   }
@@ -475,6 +476,15 @@ export class Objetos {
   centro(objetivo: string) {
     const o = this.objetos.get(objetivo);
     return o ? o.zona.getWorldPosition(new THREE.Vector3()) : null;
+  }
+
+  /** Punto justo encima del objetivo (para la etiqueta de la guía). */
+  encima(objetivo: string) {
+    const o = this.objetos.get(objetivo);
+    if (!o) return null;
+    const p = o.zona.getWorldPosition(new THREE.Vector3());
+    p.y += (o.zona.geometry as THREE.BoxGeometry).parameters.height / 2 + 0.2;
+    return p;
   }
 
   /** Interacciones ambientales (sin química): devuelve el mensaje, o null si el objetivo no es ambiental. */
@@ -507,7 +517,7 @@ export class Objetos {
     this.pantalla.tex.needsUpdate = true;
   }
 
-  actualizar(t: number, dt: number, anclas: Record<Hand, THREE.Object3D>, objetivo: string | null, pasos: { targets: { id: string }[]; done: boolean }[], vertiendoMano: Hand | null) {
+  actualizar(t: number, dt: number, anclas: Record<Hand, THREE.Object3D>, objetivo: string | null, marcar: string[], vertiendoMano: Hand | null) {
     const h = useHood.getState(), lab = useLab.getState();
     contornoMat.uniforms.t.value = t;
     for (const [id, o] of this.objetos) for (const c of o.contorno) c.visible = id === objetivo;
@@ -634,8 +644,7 @@ export class Objetos {
     this.ducha.visible = performance.now() < this.duchaHasta;
 
     // Marcas de guía: objetivos del primer paso sin hacer.
-    const actual = pasos.find(p => !p.done);
-    const ids = new Set(actual?.targets.map(x => x.id) ?? []);
+    const ids = new Set(marcar);
     for (const [id, s] of this.marcas) {
       const o = this.objetos.get(id)!;
       const enMano = id.startsWith('reagent:') && o.grupo.parent !== this.raiz;
@@ -643,7 +652,7 @@ export class Objetos {
       if (s.visible) {
         const p = o.zona.getWorldPosition(new THREE.Vector3());
         const alto = (o.zona.geometry as THREE.BoxGeometry).parameters.height;
-        s.position.set(p.x, p.y + alto / 2 + 0.05 + Math.sin(t * 3) * 0.012, p.z);
+        s.position.set(p.x, p.y + alto / 2 + 0.07 + Math.sin(t * 3.5) * 0.02, p.z);
       }
     }
   }

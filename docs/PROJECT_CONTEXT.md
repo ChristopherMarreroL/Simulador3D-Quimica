@@ -446,6 +446,15 @@ El usuario pidió «un toque más de vividez» y subir todos los cambios a `Chri
 - **Git:** primer commit con todo el trabajo acumulado desde el 5 de noviembre (prototipo web ampliado, vectores de referencia, proyecto de Unreal, arte y laboratorio web) y push a `origin/main`. El remoto estaba en el mismo commit que la copia local, así que fue un avance normal: **no se forzó ni se sobrescribió nada**. Siguen fuera de Git las fotos de referencia (`Images/`), los ejecutables (`build/`, `release/`), `dist/` y las carpetas generadas de Unreal.
 - **Vercel:** https://labquimica3d.vercel.app sigue con la versión del 20 de noviembre hasta que el usuario pida publicar de nuevo.
 
+## Misiones guiadas para principiantes (23 de noviembre de 2026)
+
+El usuario pidió que las misiones guíen a un estudiante que no sabe nada de laboratorio: flechas sobre lo que hay que usar, a dónde ir, qué hacer y qué cantidad, y un sitio para pistas.
+
+- `web-campana/src/guia.ts` deriva del paso actual de `recipeSteps` (no decide nada propio) una pista en lenguaje llano: dónde está el objeto y cómo reconocerlo (balda y posición del envase, tipo de frasco), qué tecla usar, la cantidad, y qué hacer con la mano ocupada o la probeta sucia. Sin misión, lleva primero a la protección y luego al tablero.
+- Panel «Qué hacer ahora» arriba a la derecha (tecla **H** lo oculta), flecha de tamaño constante sobre el objeto con su etiqueta, indicador en el borde de la pantalla con la distancia cuando el objeto queda fuera de la vista, y medidor en vivo (mL, g o gotas frente a lo que pide la misión).
+- Comprobado con el recorrido automático de «Vinagre y bicarbonato» y `tests/teclado.mjs`, sin errores. No lo ha probado todavía una persona.
+- Límite: el orden de los pasos es el de la capa validada (primero reunir todos los reactivos, lo que obliga a usar las dos manos o la bandeja); la guía lo explica pero no lo cambia.
+
 ## Continuidad entre sesiones
 
 Leer primero este archivo y `AGENTS.md`; consultar [ARQUITECTURA.md](ARQUITECTURA.md) antes de ampliar módulos y el contexto maestro para requisitos detallados. Verificar archivos y estado local de Git antes de hacer suposiciones sobre ramas, remotos o trabajo publicado. Actualizar este contexto cuando cambien decisiones, alcance, validaciones o próximos pasos; conservar el documento original como referencia histórica.
