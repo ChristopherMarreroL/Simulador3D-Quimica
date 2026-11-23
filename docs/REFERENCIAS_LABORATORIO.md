@@ -32,3 +32,17 @@ Los soportes y aros metálicos sobre las mesas se observan en las vistas general
 ## Video opcional
 
 Estas fotos son suficientes para esta adaptación. Si se incorpora el video más adelante, puede facilitarse como archivo local accesible o dividirse en fragmentos que muestren entrada, zona central y equipos. Su utilidad sería aclarar la continuidad entre zonas; no hace falta para avanzar con el diseño inspirado en las fotos.
+
+## Segunda serie: 22 fotografías locales · 6 de noviembre de 2026
+
+El usuario dejó 22 fotos en `Images/` (carpeta local, ignorada por Git: no se publican). Se revisaron todas en hojas de contacto. Muestran sobre todo encimeras perimetrales, armarios por dentro, balanzas, una estufa y la puerta.
+
+| Fotos | Evidencia visible | Aplicación |
+| --- | --- | --- |
+| 1–5, 15–17, 19 | Encimeras de granito oscuro tipo «azul perla» (grano gris y negro con destellos azulados, pulido y brillante), zócalo de granito, paredes blancas, ventanas corredizas de aluminio blanco sobre la encimera, tomacorrientes dobles con tapa ciega, dispensadores negros de pared, fregaderos cuadrados de acero empotrados con grifo de cuello de cisne y dos llaves en cruz, escurridores blancos con cristalería, gradillas, frascos lavadores, tarros pequeños, rollo de papel y soporte universal. | Material de granito procedural pulido con destellos azulados y zócalo; ventanas con aberturas reales y vista exterior; tomacorrientes, dispensador, fregaderos y grifería nuevos; escurridor, gradilla, frascos lavadores, tarros, papel, probetas y soporte como atrezo. |
+| 6–7 | Balanza digital blanca con pantalla, balanza de triple brazo azul y balanza de dos platillos sobre la encimera. | Balanza digital y de triple brazo decorativas en la encimera izquierda. No pesan nada. |
+| 8 | Estufa de laboratorio blanca con ventana, base y panel verde azulado, pantallas digitales y etiquetas de advertencia. | Estufa decorativa en la mesa de reactivos, con etiquetas genéricas. |
+| 9–14, 18, 20 | Interior de armarios blancos con bisagras metálicas: matraces aforados, Erlenmeyer, probetas de vidrio con base hexagonal, vasos, frascos ámbar y de plástico, embudos de decantación, gradillas y sifón bajo el fregadero. | Proporciones de cristalería y frascos de almacenamiento ámbar/blancos en el estante alto. Los armarios siguen cerrados. |
+| 21–22 | Puerta de aluminio y vidrio con franja esmerilada, tirador vertical largo, carteles de empuje y de bata obligatoria, lector de tarjetas; suelo de porcelanato claro y brillante en placas grandes. | Puerta de entrada en la pared frontal con carteles propios genéricos (bata obligatoria, empuje), lector y extintor; suelo de porcelanato claro, brillante, con juntas en relieve. |
+
+No se copiaron rótulos institucionales ni textos de prácticas («Orgánica II…», «CHEMICAL LAB», aviso a profesores), ni personas, marcas de equipos, suciedad o desorden. Las sustancias no se identificaron a partir de etiquetas. La distribución sigue siendo propia: las fotos guían materiales, mobiliario y atrezo, no un plano.

@@ -1,0 +1,106 @@
+.modal-backdrop .panel.hood-wide{width:min(980px,100%)}
+.hood-intro{margin-top:0}
+.hood-status{display:grid;grid-template-columns:120px minmax(0,1fr);gap:22px;align-items:stretch;background:linear-gradient(135deg,#e6f1ee,#eef0fa);border-radius:10px;padding:18px;margin:16px 0}
+.flask-visual{position:relative;border:2px solid #a9c4c4;border-top:0;border-radius:0 0 34px 34px;min-height:140px;overflow:hidden;background:#ffffff8a}
+.flask-liquid{position:absolute;left:0;right:0;bottom:0;transition:height .6s,background .8s,opacity .8s}
+.flask-solid{position:absolute;left:8px;right:8px;bottom:0;height:9px;border-radius:9px 9px 0 0;box-shadow:0 -1px 0 #0001}
+.flask-visual span{position:absolute;left:0;right:0;top:6px;text-align:center;font-size:10px;font-weight:600;color:var(--ink)}
+.hood-status dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px;margin:0}
+.hood-status dt{font-size:9px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
+.hood-status dd{margin:5px 0 0;font-family:Manrope,sans-serif;font-size:27px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hood-status dd small{font-size:13px}
+.hood-status dd.small{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500}
+.ph-chip{display:inline-block;width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 2px #fff8}
+.solid-tag{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 9px}
+.solid-tag i{width:10px;height:10px;border-radius:50%;border:1px solid #0002}
+.hood-warning{background:#fff3dc;border-left:4px solid #f0a020;padding:10px 14px;border-radius:6px;font-size:12px;margin:8px 0}
+.hood-title{font-family:Manrope,sans-serif;font-size:16px;margin:24px 0 10px;font-weight:600}
+.hood-empty{font-size:12px;color:var(--muted)}
+.hood-reagents{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.hood-reagents li{display:grid;grid-template-columns:14px minmax(0,1fr) 110px auto;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.hood-reagents strong{display:block;font-size:13px}.hood-reagents small{font-size:11px;color:var(--muted)}
+.hood-reagents label{font-size:10px;color:var(--muted)}
+.hood-reagents input{display:block;width:100%;margin-top:3px;padding:7px;border:1px solid #c9d8d0;border-radius:4px;font:inherit}
+.cat-dot{width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 0 4px #0001}
+.hood-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 0}
+.segmented{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+.segmented span{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:0 10px;color:var(--muted)}
+.segmented button{border:0;border-left:1px solid var(--line);background:#fff;padding:9px 12px;font-size:12px}
+.segmented button.on{background:#1d8f96;color:#fff}
+.toggle{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:7px;padding:9px 13px;font-size:12px}
+.toggle i{width:26px;height:14px;border-radius:9px;background:#c7d1cf;position:relative;transition:background .2s}
+.toggle i:after{content:'';position:absolute;left:2px;top:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle.on i{background:#2fa36b}.toggle.on i:after{left:14px}
+.hood-log{list-style:none;padding:0;margin:0;display:grid;gap:12px;max-height:360px;overflow-y:auto}
+.hood-log>li{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fbfcf8}
+.hood-log header{font-size:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hood-log header .hot{color:#d2452f;font-weight:600}.hood-log header .cold{color:#2f6fe0;font-weight:600}
+.hood-log ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.hood-event{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;border-left:3px solid #7da798;padding-left:10px}
+.hood-event-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#e6eee6;font-size:12px;font-weight:700}
+.hood-event strong{display:block;font-size:13px}
+.hood-event code{display:block;font-family:'DM Sans',sans-serif;font-size:12px;margin:4px 0;color:#0f3a44;overflow-wrap:anywhere}
+.hood-event small{font-size:10px;color:var(--muted)}
+.hood-event p{font-size:11px;margin:4px 0 0;color:#3e5a5e}
+.kind-gas{border-color:#4bb3dd}.kind-gas .hood-event-icon{background:#dff3fb}
+.kind-precipitado{border-color:#e0a820}.kind-precipitado .hood-event-icon{background:#fcf1d3}
+.kind-redox{border-color:#9a62d8}.kind-redox .hood-event-icon{background:#efe4fb}
+.kind-neutralización{border-color:#2fa36b}.kind-neutralización .hood-event-icon{background:#dff3e8}
+.kind-descomposición{border-color:#e0559d}.kind-descomposición .hood-event-icon{background:#fbe3ef}
+.hood-details{margin-top:16px;font-size:12px}.hood-details summary{font-size:12px;color:var(--muted);cursor:pointer}
+.hood-details table{width:100%;margin-top:8px}.hood-details th small{color:var(--muted);font-weight:400}
+.hood-actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:18px}
+.hood-record ol{padding-left:18px;font-size:12px}.hood-record code{display:block;font-family:inherit;color:#0f3a44}
+.target-card .tag{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+@media(max-width:650px){.hood-status{grid-template-columns:80px minmax(0,1fr);gap:12px;padding:12px}.hood-status dd{font-size:20px}.hood-reagents li{grid-template-columns:12px minmax(0,1fr);}.hood-reagents label,.hood-reagents button{grid-column:2}}
+/* Interaction prompt beside the crosshair, so the aimed object (e.g. the flask) stays visible. */
+.app .target-card{left:calc(50% + 34px);top:calc(50% + 8px);transform:none;max-width:320px}
+@media(max-width:650px){.app .target-card{left:50%;top:58%;transform:translateX(-50%)}}
+
+/* Action prompt beside the crosshair: what you aim at and what each key does. */
+.app .target-card.prompt{padding:12px 15px;max-width:340px;background:#0f2b33e6;color:#f4f8f6;border:1px solid #ffffff22;box-shadow:0 10px 30px #0004}
+.target-card.prompt strong{font-size:14px;color:#fff}.target-card.prompt small{color:#b9cdcb;font-size:11px;line-height:1.45}
+.prompt-actions{list-style:none;margin:9px 0 0;padding:0;display:grid;gap:6px}
+.prompt-actions li{display:flex;align-items:center;gap:9px;font-size:12px}
+.prompt-actions kbd{background:#f4f8f6;color:#0f2b33;border:0;font-weight:700;min-width:30px;height:22px;padding:0 6px}
+.prompt-actions kbd.mouse{background:#f2c14e}.prompt-actions kbd.look{background:#ffffff26;color:#dfe9e7}
+.pour-gauge{position:absolute;left:calc(50% + 34px);top:calc(50% + 8px);background:#0f2b33e6;color:#fff;border-radius:8px;padding:12px 16px;min-width:250px;text-align:center;pointer-events:none}
+.pour-gauge span{display:block;font-size:11px;color:#b9cdcb;letter-spacing:.4px}.pour-gauge strong{display:block;font-family:Manrope,sans-serif;font-size:26px;margin:3px 0 8px}
+.pour-bar{height:6px;border-radius:4px;background:#ffffff22;overflow:hidden}.pour-bar i{display:block;height:100%;background:linear-gradient(90deg,#4bb3dd,#f2c14e)}
+.pour-gauge small{display:block;font-size:10px;color:#b9cdcb;margin-top:6px}
+@media(max-width:650px){.pour-gauge{left:50%;top:58%;transform:translateX(-50%)}}
+.settings{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:12px;text-align:left}
+.settings .segmented{justify-content:space-between}.settings label{font-size:11px;color:var(--muted)}.settings label b{color:var(--ink)}
+.settings input[type=range]{padding:0;border:0;background:none;accent-color:#1d8f96}.settings small{font-size:10px;color:var(--muted);line-height:1.5}
+.settings .check{display:flex;align-items:center;gap:8px}.settings .check input{width:auto;margin:0}
+.fps{position:absolute;right:22px;top:82px;background:#0f2b33d9;color:#d9f5e6;font:600 11px/1 'DM Sans',monospace;padding:7px 10px;border-radius:5px;pointer-events:none}
+
+/* Guided experiment checklist. */
+.objective.recipe-card{width:330px;max-height:calc(100vh - 230px);overflow:auto}
+.recipe-card .recipe-eq{font-family:Manrope,sans-serif;font-weight:600;color:var(--ink)!important;margin:2px 0 10px!important;font-size:12px!important}
+.recipe-card ol{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
+.recipe-card li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:11.5px;line-height:1.4;color:var(--muted)}
+.recipe-card li>span{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#e3e9e6;font-size:10px;font-weight:700;color:#5f7473}
+.recipe-card li.done{color:#7c928f;text-decoration:line-through}.recipe-card li.done>span{background:#2fa36b;color:#fff}
+.recipe-card li.current{color:var(--ink);font-weight:600}.recipe-card li.current>span{background:#f2c14e;color:#3b2a00}
+.recipe-card li small{display:block;font-weight:400;color:var(--muted);margin-top:2px}
+.pour-bar{position:relative}.pour-bar b{position:absolute;top:-3px;width:2px;height:12px;background:#fff;box-shadow:0 0 0 1px #0f2b33}
+.pour-gauge.near{outline:2px solid #2fa36b}
+/* Safety goggles: a faint frame at the edge of the view while worn. */
+.goggles{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 72% 68% at 50% 48%,transparent 78%,#1d2a3a26 90%,#1d2a3a5c 100%);box-shadow:inset 0 0 0 3px #ffffff14}
+/* Experiment chooser. */
+.recipes-intro{margin-top:0}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.recipe-item{border:1px solid var(--line);border-radius:10px;background:#fff;padding:16px;display:flex;flex-direction:column;gap:8px}
+.recipe-item.active{border-color:#f2c14e;box-shadow:0 0 0 2px #f2c14e55}
+.recipe-item header{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.recipe-item h3{font-family:Manrope,sans-serif;font-size:15px;margin:0}.recipe-item .level{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.recipe-item code{font-family:'DM Sans',sans-serif;font-size:12px;color:#0f3a44}
+.recipe-item p{margin:0!important;font-size:11.5px!important;line-height:1.55!important}
+.recipe-item ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:11.5px}
+.recipe-item ul i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.recipe-item .safety{color:#8d532c!important}
+.recipe-item .button{margin-top:auto}
+.hood-howto{list-style:none;padding:0;margin:0 0 4px;display:grid;gap:6px;font-size:12px}
+.hood-howto li{background:#fff;border:1px solid var(--line);border-radius:7px;padding:9px 12px}
+.hood-howto b{color:var(--ink)}

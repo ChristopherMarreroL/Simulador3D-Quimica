@@ -5,6 +5,8 @@ const cabinets = [
   { x: -3.15, z: -4.1, w: 4.3, d: 1 }, { x: 4.8, z: -3.6, w: 1.8, d: 2 },
   { x: -5.1, z: 0.5, w: 1, d: 2.5 }, { x: 5.25, z: 0.8, w: 0.95, d: 4.8 },
   { x: -5.74, z: 3.3, w: 0.45, d: 0.45 },
+  { x: 3.3, z: -4.72, w: 1.12, d: 0.44 }, // Reagent shelving next to the fume hood.
+  { x: -0.3, z: -4.75, w: 1.25, d: 0.38 }, // Display cabinet on the back wall.
 ];
 function polygon(o: { x: number; z: number; w: number; d: number }, cut = 0): Point[] {
   const x = o.w / 2, z = o.d / 2;

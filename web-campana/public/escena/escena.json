@@ -1,0 +1,693 @@
+{
+ "version": 2,
+ "fecha": "2026-11-19",
+ "muestras": 256,
+ "luz": {
+  "solDireccion": [
+   -0.4075896441936493,
+   0.853760302066803,
+   0.32398152351379395
+  ],
+  "solElevacionGrados": 58.62304687499999,
+  "hdriFuerza": 9.48497965039702,
+  "hdriGiroBlenderRad": -1.8425883550908255,
+  "solLux": 45000.0,
+  "cieloNits": 3000.0,
+  "ledLm": 4000.0,
+  "leds": [
+   [
+    -450.0,
+    100.0,
+    320.0
+   ],
+   [
+    -150.0,
+    100.0,
+    320.0
+   ],
+   [
+    150.0,
+    100.0,
+    320.0
+   ],
+   [
+    450.0,
+    100.0,
+    320.0
+   ],
+   [
+    -450.0,
+    400.0,
+    320.0
+   ],
+   [
+    -150.0,
+    400.0,
+    320.0
+   ],
+   [
+    150.0,
+    400.0,
+    320.0
+   ],
+   [
+    450.0,
+    400.0,
+    320.0
+   ],
+   [
+    -450.0,
+    700.0,
+    320.0
+   ],
+   [
+    -150.0,
+    700.0,
+    320.0
+   ],
+   [
+    150.0,
+    700.0,
+    320.0
+   ],
+   [
+    450.0,
+    700.0,
+    320.0
+   ]
+  ],
+  "sala": [
+   -600.0,
+   600.0,
+   -46.0,
+   854.0,
+   320.0
+  ],
+  "islas": [
+   [
+    -300.0,
+    330.0
+   ],
+   [
+    150.0,
+    330.0
+   ],
+   [
+    -300.0,
+    620.0
+   ],
+   [
+    150.0,
+    620.0
+   ]
+  ],
+  "lavabos": [
+   200.0,
+   560.0
+  ]
+ },
+ "mapas": {
+  "Suelo": {
+   "archivo": "lm/Suelo.hdr",
+   "resolucion": 1536,
+   "max": 19.41562843322754,
+   "media": 0.34920361638069153
+  },
+  "Techo": {
+   "archivo": "lm/Techo.hdr",
+   "resolucion": 768,
+   "max": 1.3764913082122803,
+   "media": 0.1899385154247284
+  },
+  "Pared_Fondo": {
+   "archivo": "lm/Pared_Fondo.hdr",
+   "resolucion": 768,
+   "max": 1.3624175786972046,
+   "media": 0.042792122811079025
+  },
+  "Pared_Trasera": {
+   "archivo": "lm/Pared_Trasera.hdr",
+   "resolucion": 768,
+   "max": 0.9412586688995361,
+   "media": 0.03453754633665085
+  },
+  "Pared_Derecha": {
+   "archivo": "lm/Pared_Derecha.hdr",
+   "resolucion": 768,
+   "max": 0.310639351606369,
+   "media": 0.029354555532336235
+  },
+  "Pared_Izq_Bajo": {
+   "archivo": "lm/Pared_Izq_Bajo.hdr",
+   "resolucion": 512,
+   "max": 26.359291076660156,
+   "media": 0.4116499423980713
+  },
+  "Pared_Izq_Alto": {
+   "archivo": "lm/Pared_Izq_Alto.hdr",
+   "resolucion": 256,
+   "max": 9.046520233154297,
+   "media": 0.12399411201477051
+  },
+  "Pared_Izq_Pilar_0": {
+   "archivo": "lm/Pared_Izq_Pilar_0.hdr",
+   "resolucion": 128,
+   "max": 14.189391136169434,
+   "media": 1.0141390562057495
+  },
+  "Pared_Izq_Pilar_1": {
+   "archivo": "lm/Pared_Izq_Pilar_1.hdr",
+   "resolucion": 128,
+   "max": 14.258170127868652,
+   "media": 1.147452712059021
+  },
+  "Pared_Izq_Pilar_2": {
+   "archivo": "lm/Pared_Izq_Pilar_2.hdr",
+   "resolucion": 128,
+   "max": 14.259819984436035,
+   "media": 1.2137031555175781
+  },
+  "Pared_Izq_Pilar_3": {
+   "archivo": "lm/Pared_Izq_Pilar_3.hdr",
+   "resolucion": 128,
+   "max": 9.106429100036621,
+   "media": 1.7154077291488647
+  },
+  "Ventana_Marco_0": {
+   "archivo": "lm/Ventana_Marco_0.hdr",
+   "resolucion": 64,
+   "max": 21.01490020751953,
+   "media": 3.0667827129364014
+  },
+  "Alfeizar_0": {
+   "archivo": "lm/Alfeizar_0.hdr",
+   "resolucion": 64,
+   "max": 20.972209930419922,
+   "media": 2.068013906478882
+  },
+  "Ventana_Marco_1": {
+   "archivo": "lm/Ventana_Marco_1.hdr",
+   "resolucion": 64,
+   "max": 21.120384216308594,
+   "media": 3.1480607986450195
+  },
+  "Alfeizar_1": {
+   "archivo": "lm/Alfeizar_1.hdr",
+   "resolucion": 64,
+   "max": 21.037418365478516,
+   "media": 2.0797975063323975
+  },
+  "Ventana_Marco_2": {
+   "archivo": "lm/Ventana_Marco_2.hdr",
+   "resolucion": 64,
+   "max": 21.072404861450195,
+   "media": 3.078021287918091
+  },
+  "Alfeizar_2": {
+   "archivo": "lm/Alfeizar_2.hdr",
+   "resolucion": 64,
+   "max": 20.539220809936523,
+   "media": 1.8517851829528809
+  },
+  "Zocalos": {
+   "archivo": "lm/Zocalos.hdr",
+   "resolucion": 256,
+   "max": 7.374654769897461,
+   "media": 0.030675768852233887
+  },
+  "Puerta_Marco": {
+   "archivo": "lm/Puerta_Marco.hdr",
+   "resolucion": 128,
+   "max": 1.0744810104370117,
+   "media": 0.01581844873726368
+  },
+  "Puerta_Hoja": {
+   "archivo": "lm/Puerta_Hoja.hdr",
+   "resolucion": 128,
+   "max": 0.2904221713542938,
+   "media": 0.06952206045389175
+  },
+  "Puerta_Tirador": {
+   "archivo": "lm/Puerta_Tirador.hdr",
+   "resolucion": 64,
+   "max": 0.28297173976898193,
+   "media": 0.07722782343626022
+  },
+  "Extintor": {
+   "archivo": "lm/Extintor.hdr",
+   "resolucion": 64,
+   "max": 0.2488444745540619,
+   "media": 0.07731636613607407
+  },
+  "Aire_0": {
+   "archivo": "lm/Aire_0.hdr",
+   "resolucion": 64,
+   "max": 0.5170944929122925,
+   "media": 0.13917601108551025
+  },
+  "Aire_Rejilla_0": {
+   "archivo": "lm/Aire_Rejilla_0.hdr",
+   "resolucion": 64,
+   "max": 1.1252115964889526,
+   "media": 0.06589972227811813
+  },
+  "Aire_1": {
+   "archivo": "lm/Aire_1.hdr",
+   "resolucion": 64,
+   "max": 0.4233549237251282,
+   "media": 0.1151827797293663
+  },
+  "Aire_Rejilla_1": {
+   "archivo": "lm/Aire_Rejilla_1.hdr",
+   "resolucion": 64,
+   "max": 1.3617913722991943,
+   "media": 0.03981320932507515
+  },
+  "Gabinete_Fondo_0": {
+   "archivo": "lm/Gabinete_Fondo_0.hdr",
+   "resolucion": 256,
+   "max": 1.8874034881591797,
+   "media": 0.0972539484500885
+  },
+  "Gabinete_Fondo_1": {
+   "archivo": "lm/Gabinete_Fondo_1.hdr",
+   "resolucion": 256,
+   "max": 0.9293817281723022,
+   "media": 0.03399389982223511
+  },
+  "Gabinete_Fondo_2": {
+   "archivo": "lm/Gabinete_Fondo_2.hdr",
+   "resolucion": 256,
+   "max": 0.29234153032302856,
+   "media": 0.02121579833328724
+  },
+  "Gabinete_Fondo_3": {
+   "archivo": "lm/Gabinete_Fondo_3.hdr",
+   "resolucion": 256,
+   "max": 0.3899451196193695,
+   "media": 0.021592890843749046
+  },
+  "Gabinete_Lavabos_0": {
+   "archivo": "lm/Gabinete_Lavabos_0.hdr",
+   "resolucion": 256,
+   "max": 0.25897592306137085,
+   "media": 0.024385733529925346
+  },
+  "Gabinete_Lavabos_1": {
+   "archivo": "lm/Gabinete_Lavabos_1.hdr",
+   "resolucion": 256,
+   "max": 0.6125739812850952,
+   "media": 0.020457493141293526
+  },
+  "Gabinete_Lavabos_2": {
+   "archivo": "lm/Gabinete_Lavabos_2.hdr",
+   "resolucion": 256,
+   "max": 0.436069518327713,
+   "media": 0.02469281665980816
+  },
+  "Encimera_Izquierda": {
+   "archivo": "lm/Encimera_Izquierda.hdr",
+   "resolucion": 512,
+   "max": 1.6840569972991943,
+   "media": 0.10014327615499496
+  },
+  "Encimera_Derecha": {
+   "archivo": "lm/Encimera_Derecha.hdr",
+   "resolucion": 512,
+   "max": 0.7721351385116577,
+   "media": 0.04010968282818794
+  },
+  "Encimera_Lavabos": {
+   "archivo": "lm/Encimera_Lavabos.hdr",
+   "resolucion": 512,
+   "max": 0.7218772768974304,
+   "media": 0.05242762342095375
+  },
+  "Lavabos_Cubetas": {
+   "archivo": "lm/Lavabos_Cubetas.hdr",
+   "resolucion": 256,
+   "max": 0.012189577333629131,
+   "media": 1.6542586536161252e-06
+  },
+  "Meseta_Cuerpo_0": {
+   "archivo": "lm/Meseta_Cuerpo_0.hdr",
+   "resolucion": 256,
+   "max": 1.658004879951477,
+   "media": 0.2941111922264099
+  },
+  "Meseta_Zocalo_0": {
+   "archivo": "lm/Meseta_Zocalo_0.hdr",
+   "resolucion": 64,
+   "max": 0.8931129574775696,
+   "media": 0.037249572575092316
+  },
+  "Meseta_Granito_0": {
+   "archivo": "lm/Meseta_Granito_0.hdr",
+   "resolucion": 512,
+   "max": 1.8603485822677612,
+   "media": 0.19694660604000092
+  },
+  "Meseta_Gas_0": {
+   "archivo": "lm/Meseta_Gas_0.hdr",
+   "resolucion": 64,
+   "max": 0.3960677981376648,
+   "media": 0.10325417667627335
+  },
+  "Meseta_Llaves_0": {
+   "archivo": "lm/Meseta_Llaves_0.hdr",
+   "resolucion": 64,
+   "max": 0.39291226863861084,
+   "media": 0.1269240528345108
+  },
+  "Meseta_Cuerpo_1": {
+   "archivo": "lm/Meseta_Cuerpo_1.hdr",
+   "resolucion": 256,
+   "max": 0.39978915452957153,
+   "media": 0.10047616809606552
+  },
+  "Meseta_Zocalo_1": {
+   "archivo": "lm/Meseta_Zocalo_1.hdr",
+   "resolucion": 64,
+   "max": 0.5023545622825623,
+   "media": 0.01414334774017334
+  },
+  "Meseta_Granito_1": {
+   "archivo": "lm/Meseta_Granito_1.hdr",
+   "resolucion": 512,
+   "max": 0.9497484564781189,
+   "media": 0.08865726739168167
+  },
+  "Meseta_Gas_1": {
+   "archivo": "lm/Meseta_Gas_1.hdr",
+   "resolucion": 64,
+   "max": 0.19150124490261078,
+   "media": 0.049881648272275925
+  },
+  "Meseta_Llaves_1": {
+   "archivo": "lm/Meseta_Llaves_1.hdr",
+   "resolucion": 64,
+   "max": 0.23107841610908508,
+   "media": 0.058238789439201355
+  },
+  "Meseta_Cuerpo_2": {
+   "archivo": "lm/Meseta_Cuerpo_2.hdr",
+   "resolucion": 256,
+   "max": 1.9165699481964111,
+   "media": 0.29368388652801514
+  },
+  "Meseta_Zocalo_2": {
+   "archivo": "lm/Meseta_Zocalo_2.hdr",
+   "resolucion": 64,
+   "max": 0.8371720314025879,
+   "media": 0.03499386087059975
+  },
+  "Meseta_Granito_2": {
+   "archivo": "lm/Meseta_Granito_2.hdr",
+   "resolucion": 512,
+   "max": 2.1610193252563477,
+   "media": 0.19140522181987762
+  },
+  "Meseta_Gas_2": {
+   "archivo": "lm/Meseta_Gas_2.hdr",
+   "resolucion": 64,
+   "max": 0.39822375774383545,
+   "media": 0.10052376240491867
+  },
+  "Meseta_Llaves_2": {
+   "archivo": "lm/Meseta_Llaves_2.hdr",
+   "resolucion": 64,
+   "max": 0.45113274455070496,
+   "media": 0.129960834980011
+  },
+  "Meseta_Cuerpo_3": {
+   "archivo": "lm/Meseta_Cuerpo_3.hdr",
+   "resolucion": 256,
+   "max": 0.3625201880931854,
+   "media": 0.08894574642181396
+  },
+  "Meseta_Zocalo_3": {
+   "archivo": "lm/Meseta_Zocalo_3.hdr",
+   "resolucion": 64,
+   "max": 0.2269737869501114,
+   "media": 0.01120737474411726
+  },
+  "Meseta_Granito_3": {
+   "archivo": "lm/Meseta_Granito_3.hdr",
+   "resolucion": 512,
+   "max": 1.255389928817749,
+   "media": 0.08156382292509079
+  },
+  "Meseta_Gas_3": {
+   "archivo": "lm/Meseta_Gas_3.hdr",
+   "resolucion": 64,
+   "max": 0.18025784194469452,
+   "media": 0.04542848467826843
+  },
+  "Meseta_Llaves_3": {
+   "archivo": "lm/Meseta_Llaves_3.hdr",
+   "resolucion": 64,
+   "max": 0.22967132925987244,
+   "media": 0.05791306495666504
+  },
+  "Estantes_Material": {
+   "archivo": "lm/Estantes_Material.hdr",
+   "resolucion": 256,
+   "max": 0.7941439151763916,
+   "media": 0.12742744386196136
+  },
+  "Estanteria_Reactivos": {
+   "archivo": "lm/Estanteria_Reactivos.hdr",
+   "resolucion": 512,
+   "max": 0.7822309136390686,
+   "media": 0.05089738965034485
+  },
+  "Bandeja": {
+   "archivo": "lm/Bandeja.hdr",
+   "resolucion": 64,
+   "max": 0.2335732877254486,
+   "media": 0.05816027149558067
+  },
+  "Estante_Proteccion": {
+   "archivo": "lm/Estante_Proteccion.hdr",
+   "resolucion": 64,
+   "max": 1.0145920515060425,
+   "media": 0.039462611079216
+  },
+  "Tablero": {
+   "archivo": "lm/Tablero.hdr",
+   "resolucion": 128,
+   "max": 0.21783781051635742,
+   "media": 0.11435966938734055
+  },
+  "Residuos": {
+   "archivo": "lm/Residuos.hdr",
+   "resolucion": 128,
+   "max": 0.22351045906543732,
+   "media": 0.05142999812960625
+  },
+  "Residuos_Embudo": {
+   "archivo": "lm/Residuos_Embudo.hdr",
+   "resolucion": 64,
+   "max": 0.19546125829219818,
+   "media": 0.060952719300985336
+  },
+  "Ducha_Tubos": {
+   "archivo": "lm/Ducha_Tubos.hdr",
+   "resolucion": 64,
+   "max": 1.619076132774353,
+   "media": 0.07986011356115341
+  },
+  "Ducha_Brazos": {
+   "archivo": "lm/Ducha_Brazos.hdr",
+   "resolucion": 64,
+   "max": 1.864709734916687,
+   "media": 0.33914613723754883
+  },
+  "Ducha_Cabezal": {
+   "archivo": "lm/Ducha_Cabezal.hdr",
+   "resolucion": 64,
+   "max": 1.132883906364441,
+   "media": 0.37533116340637207
+  },
+  "Ducha_Lavaojos": {
+   "archivo": "lm/Ducha_Lavaojos.hdr",
+   "resolucion": 64,
+   "max": 2.307326316833496,
+   "media": 0.5654110908508301
+  },
+  "Ducha_Tirador": {
+   "archivo": "lm/Ducha_Tirador.hdr",
+   "resolucion": 64,
+   "max": 1.0888208150863647,
+   "media": 0.41724467277526855
+  },
+  "Ducha_Zona": {
+   "archivo": "lm/Ducha_Zona.hdr",
+   "resolucion": 64,
+   "max": 19.56215476989746,
+   "media": 4.1547675132751465
+  },
+  "Mesetas_Repisas": {
+   "archivo": "lm/Mesetas_Repisas.hdr",
+   "resolucion": 512,
+   "max": 1.2867741584777832,
+   "media": 0.1715206354856491
+  },
+  "Taburetes_Asientos": {
+   "archivo": "lm/Taburetes_Asientos.hdr",
+   "resolucion": 128,
+   "max": 1.8453277349472046,
+   "media": 0.2021941989660263
+  },
+  "Taburetes_Pies": {
+   "archivo": "lm/Taburetes_Pies.hdr",
+   "resolucion": 128,
+   "max": 0.6990879774093628,
+   "media": 0.12226936221122742
+  },
+  "Altos_Lavabos": {
+   "archivo": "lm/Altos_Lavabos.hdr",
+   "resolucion": 256,
+   "max": 0.3215847313404083,
+   "media": 0.08228554576635361
+  },
+  "Escurridores": {
+   "archivo": "lm/Escurridores.hdr",
+   "resolucion": 128,
+   "max": 0.2662694454193115,
+   "media": 0.06246759369969368
+  },
+  "Escurridores_Pivotes": {
+   "archivo": "lm/Escurridores_Pivotes.hdr",
+   "resolucion": 64,
+   "max": 0.2549876570701599,
+   "media": 0.09941967576742172
+  },
+  "Dispensadores_Papel": {
+   "archivo": "lm/Dispensadores_Papel.hdr",
+   "resolucion": 64,
+   "max": 0.2451835423707962,
+   "media": 0.07387807220220566
+  },
+  "Armarios": {
+   "archivo": "lm/Armarios.hdr",
+   "resolucion": 512,
+   "max": 1.335323452949524,
+   "media": 0.15095318853855133
+  },
+  "Armario_Inflamables": {
+   "archivo": "lm/Armario_Inflamables.hdr",
+   "resolucion": 128,
+   "max": 0.27538421750068665,
+   "media": 0.056711915880441666
+  },
+  "Armario_Corrosivos": {
+   "archivo": "lm/Armario_Corrosivos.hdr",
+   "resolucion": 128,
+   "max": 0.270491361618042,
+   "media": 0.035647302865982056
+  },
+  "Nevera": {
+   "archivo": "lm/Nevera.hdr",
+   "resolucion": 128,
+   "max": 0.3115388751029968,
+   "media": 0.05366251990199089
+  },
+  "Bombonas": {
+   "archivo": "lm/Bombonas.hdr",
+   "resolucion": 128,
+   "max": 19.269742965698242,
+   "media": 0.5441766381263733
+  },
+  "Bombonas_Soporte": {
+   "archivo": "lm/Bombonas_Soporte.hdr",
+   "resolucion": 64,
+   "max": 20.751253128051758,
+   "media": 0.44906115531921387
+  },
+  "Carrito": {
+   "archivo": "lm/Carrito.hdr",
+   "resolucion": 128,
+   "max": 20.095075607299805,
+   "media": 1.6437863111495972
+  },
+  "Papeleras": {
+   "archivo": "lm/Papeleras.hdr",
+   "resolucion": 64,
+   "max": 0.5853015780448914,
+   "media": 0.07220949977636337
+  },
+  "Escritorio_Tablero": {
+   "archivo": "lm/Escritorio_Tablero.hdr",
+   "resolucion": 256,
+   "max": 0.43707922101020813,
+   "media": 0.0592314712703228
+  },
+  "Escritorio_Negro": {
+   "archivo": "lm/Escritorio_Negro.hdr",
+   "resolucion": 128,
+   "max": 1.310734510421753,
+   "media": 0.08614462614059448
+  },
+  "Escritorio_Silla_Pie": {
+   "archivo": "lm/Escritorio_Silla_Pie.hdr",
+   "resolucion": 64,
+   "max": 0.2876991927623749,
+   "media": 0.05604247748851776
+  },
+  "Pizarra": {
+   "archivo": "lm/Pizarra.hdr",
+   "resolucion": 128,
+   "max": 0.000410884473240003,
+   "media": 6.088752968480549e-08
+  },
+  "Pizarra_Marco": {
+   "archivo": "lm/Pizarra_Marco.hdr",
+   "resolucion": 64,
+   "max": 1.367639183998108,
+   "media": 0.04735259339213371
+  },
+  "Botiquin": {
+   "archivo": "lm/Botiquin.hdr",
+   "resolucion": 64,
+   "max": 0.31448569893836975,
+   "media": 0.09182548522949219
+  },
+  "Conducto_Campana": {
+   "archivo": "lm/Conducto_Campana.hdr",
+   "resolucion": 128,
+   "max": 2.0154876708984375,
+   "media": 0.09025915712118149
+  },
+  "Muebles_Juntas": {
+   "archivo": "lm/Muebles_Juntas.hdr",
+   "resolucion": 64,
+   "max": 2.1286823749542236,
+   "media": 0.12273186445236206
+  },
+  "Muebles_Tiradores": {
+   "archivo": "lm/Muebles_Tiradores.hdr",
+   "resolucion": 64,
+   "max": 0.9237053394317627,
+   "media": 0.18917012214660645
+  },
+  "Gabinete_Blanco": {
+   "archivo": "lm/Gabinete_Blanco.hdr",
+   "resolucion": 512,
+   "max": 0.6605178713798523,
+   "media": 0.02460181713104248
+  },
+  "Encimera_Granito": {
+   "archivo": "lm/Encimera_Granito.hdr",
+   "resolucion": 512,
+   "max": 1.007771611213684,
+   "media": 0.0616743266582489
+  },
+  "Campana_Sobremesa": {
+   "archivo": "lm/Campana_Sobremesa.hdr",
+   "resolucion": 1024,
+   "max": 0.917191207408905,
+   "media": 0.06608990579843521
+  }
+ }
+}

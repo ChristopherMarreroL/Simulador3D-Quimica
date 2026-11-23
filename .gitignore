@@ -3,3 +3,26 @@ dist/
 *.local
 test-results/
 *.tsbuildinfo
+
+# Fotografías de referencia del laboratorio real: privadas, no se publican.
+Images/
+release/
+
+# Compilación del motor químico fuera de Unreal (native/ExperimentaChem/build.ps1).
+native/ExperimentaChem/build/
+
+# Carpetas y archivos que genera Unreal Engine en el proyecto Unreal/Experimenta3D.
+Unreal/Experimenta3D/Binaries/
+Unreal/Experimenta3D/Intermediate/
+Unreal/Experimenta3D/Saved/
+Unreal/Experimenta3D/DerivedDataCache/
+Unreal/Experimenta3D/.vs/
+Unreal/Experimenta3D/*.sln
+Unreal/Experimenta3D/*.slnx
+
+# Ejecutable empaquetado de Unreal (RunUAT BuildCookRun -archivedirectory=build/Experimenta3D_Windows).
+build/
+
+# Copia de web-campana/dist con el nombre del proyecto de Vercel (se regenera con npm run campana:build).
+web-campana/experimenta3d-laboratorio/
+web-campana/labquimica3d/

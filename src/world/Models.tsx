@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { glass } from './materials';
 import { items, type ItemId } from '../experiments/definitions';
 import { periodicRows, symbols } from '../experiments/periodic';
 export function PeriodicPoster() {
@@ -28,19 +29,35 @@ export function Sign({ text, position, width = 1.5, height = 0.35, dark = false,
 export function Box({ position, size, color = '#e1e8e5', interactive }: { position: [number, number, number]; size: [number, number, number]; color?: string; interactive?: string }) {
   return <mesh position={position} castShadow receiveShadow userData={{ interactive }}><boxGeometry args={size}/><meshStandardMaterial color={color} roughness={0.65}/></mesh>;
 }
+const amberGlass = new THREE.MeshPhysicalMaterial({ color: '#7a4314', transparent: true, opacity: 0.82, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.05 });
+const hdpeWhite = new THREE.MeshStandardMaterial({ color: '#f4f3ee', roughness: 0.55 });
+const beakerGlass = glass.lab;
+/** Practice-01 containers: a 250 mL beaker (drawn at the scene's demonstration scale), an amber vinegar jug and a baking-soda jar. */
 export function Instrument({ id, highlighted = false, liquid = 0, castShadow = true }: { id: ItemId; highlighted?: boolean; liquid?: number; castShadow?: boolean }) {
-  const isBeaker = id === 'beaker'; const color = items[id].color;
+  const glow = highlighted ? '#3fc1c9' : '#000000';
+  if (id === 'beaker') return <group userData={{ interactive: id }}>
+    <mesh position={[0, 0.19, 0]} castShadow={castShadow} material={beakerGlass}><cylinderGeometry args={[0.145, 0.135, 0.38, 40, 1, true]}/></mesh>
+    <mesh position={[0, 0.006, 0]} material={beakerGlass}><cylinderGeometry args={[0.135, 0.135, 0.012, 40]}/></mesh>
+    <mesh position={[0, 0.38, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.145, 0.006, 8, 40]}/><meshPhysicalMaterial color="#eaf6f8" roughness={0.05} clearcoat={1} emissive={glow} emissiveIntensity={0.6}/></mesh>
+    <mesh position={[0.145, 0.375, 0]} rotation={[0, 0, -0.5]}><boxGeometry args={[0.02, 0.012, 0.035]}/><meshPhysicalMaterial color="#eaf6f8" transparent opacity={0.5}/></mesh>
+    {[0.09, 0.15, 0.21, 0.27, 0.33].map((y, i) => <mesh key={y} position={[0.03, y, 0.1405]}><planeGeometry args={[i % 2 ? 0.035 : 0.06, 0.004]}/><meshBasicMaterial color="#ffffff" transparent opacity={0.85}/></mesh>)}
+    {liquid > 0 && <mesh position={[0, liquid / 2 + 0.013, 0]}><cylinderGeometry args={[0.132, 0.131, liquid, 36]}/><meshPhysicalMaterial color="#e9c46f" transparent opacity={0.62} roughness={0.05} clearcoat={0.6}/></mesh>}
+  </group>;
+  const vinegar = id === 'vinegar';
   return <group userData={{ interactive: id }}>
-    <mesh position={[0, 0.19, 0]} castShadow={castShadow}><cylinderGeometry args={[isBeaker ? 0.145 : 0.12, isBeaker ? 0.13 : 0.12, 0.38, 32, 1, isBeaker]}/><meshPhysicalMaterial color={isBeaker ? '#d0e8ec' : id === 'vinegar' ? '#80511c' : '#e7f1ee'} transparent opacity={isBeaker ? 0.28 : 0.97} roughness={0.18} metalness={0.05} side={THREE.DoubleSide} emissive={highlighted ? '#39aab4' : '#000000'} emissiveIntensity={0.5}/></mesh>
-    {isBeaker ? <>
-      <mesh position={[0, 0.015, 0]}><cylinderGeometry args={[0.13, 0.13, 0.025, 32]}/><meshStandardMaterial color="#b5d4db" transparent opacity={0.45}/></mesh>
-      <mesh position={[0, 0.38, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.145, 0.009, 8, 32]}/><meshStandardMaterial color="#c5e1e3"/></mesh>
-      {[0.1, 0.17, 0.24, 0.31].map(y => <Box key={y} position={[0.06, y, 0.128]} size={[0.05, 0.006, 0.005]} color="#f5ffff"/>)}
-      {liquid > 0 && <mesh position={[0, liquid / 2 + 0.025, 0]}><cylinderGeometry args={[0.126, 0.12, liquid, 32]}/><meshStandardMaterial color="#eac76c" transparent opacity={0.65}/></mesh>}
+    <mesh position={[0, 0.15, 0]} castShadow={castShadow} material={vinegar ? amberGlass : hdpeWhite}><cylinderGeometry args={[0.115, 0.118, 0.3, 32]}/></mesh>
+    {vinegar ? <>
+      <mesh position={[0, 0.13, 0]}><cylinderGeometry args={[0.105, 0.105, 0.24, 24]}/><meshStandardMaterial color="#d9a54e" transparent opacity={0.55}/></mesh>
+      <mesh position={[0, 0.33, 0]} material={amberGlass}><cylinderGeometry args={[0.05, 0.115, 0.06, 32]}/></mesh>
+      <mesh position={[0, 0.38, 0]} material={amberGlass}><cylinderGeometry args={[0.042, 0.048, 0.05, 24]}/></mesh>
+      <mesh position={[0, 0.42, 0]}><cylinderGeometry args={[0.05, 0.05, 0.04, 24]}/><meshStandardMaterial color="#1f2326" roughness={0.45} emissive={glow} emissiveIntensity={0.6}/></mesh>
+      <mesh position={[0.1, 0.3, 0]} rotation={[0, 0, 0.3]} material={amberGlass}><torusGeometry args={[0.05, 0.013, 8, 20, Math.PI * 1.2]}/></mesh>
     </> : <>
-      <mesh position={[0, 0.42, 0]}><cylinderGeometry args={[0.077, 0.077, 0.09, 24]}/><meshStandardMaterial color={color}/></mesh>
-      <Sign text={id === 'vinegar' ? 'CH₃COOH' : 'NaHCO₃'} position={[0, 0.23, 0.122]} width={0.21} height={0.095}/>
-      <Box position={[0, 0.14, 0.123]} size={[0.18, 0.025, 0.004]} color={color}/>
+      <mesh position={[0, 0.33, 0]}><cylinderGeometry args={[0.121, 0.121, 0.06, 32]}/><meshStandardMaterial color={items[id].color} roughness={0.45} emissive={glow} emissiveIntensity={0.6}/></mesh>
+      {Array.from({ length: 24 }, (_, i) => <mesh key={i} position={[Math.cos(i / 24 * Math.PI * 2) * 0.122, 0.33, Math.sin(i / 24 * Math.PI * 2) * 0.122]} rotation={[0, -i / 24 * Math.PI * 2, 0]}><boxGeometry args={[0.004, 0.05, 0.01]}/><meshStandardMaterial color={items[id].color}/></mesh>)}
     </>}
+    <mesh position={[0, 0.16, 0.1175]}><planeGeometry args={[0.17, 0.13]}/><meshStandardMaterial color="#fbfaf3" roughness={0.8} emissive={glow} emissiveIntensity={0.2}/></mesh>
+    <Sign text={vinegar ? 'CH₃COOH 0,83 M' : 'NaHCO₃ (s)'} position={[0, 0.18, 0.1185]} width={0.16} height={0.045}/>
+    <mesh position={[0, 0.115, 0.1185]}><planeGeometry args={[0.16, 0.018]}/><meshBasicMaterial color={vinegar ? '#e0483a' : '#2f6fe0'}/></mesh>
   </group>;
 }

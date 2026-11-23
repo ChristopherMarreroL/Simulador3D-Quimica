@@ -1,7 +1,8 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { usePractices } from './practices';
 const saved = new Map<string, string>();
-vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) });
+// Asignación directa en lugar de vi.stubGlobal para que también funcione con `bun test`.
+Object.defineProperty(globalThis, 'localStorage', { value: { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) }, configurable: true, writable: true });
 const p = () => usePractices.getState();
 beforeEach(() => { vi.useFakeTimers(); p().cancelPending(); usePractices.setState({ records: [] }); });
 it('exige preparar una solución y registra una medición completada una sola vez', () => {

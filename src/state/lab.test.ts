@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLab, guidedIndex } from './lab';
 const saved = new Map<string, string>();
-vi.stubGlobal('localStorage', { getItem: (k: string) => saved.get(k) ?? null, setItem: (k: string, v: string) => saved.set(k, v) });
-vi.stubGlobal('document', { pointerLockElement: null });
+// Asignación directa en lugar de vi.stubGlobal para que también funcione con `bun test`.
+const stubGlobal = (name: string, value: unknown) => Object.defineProperty(globalThis, name, { value, configurable: true, writable: true });
+stubGlobal('localStorage', { getItem: (k: string) => saved.get(k) ?? null, setItem: (k: string, v: string) => saved.set(k, v) });
+stubGlobal('document', { pointerLockElement: null });
 const s = () => useLab.getState();
 function useTarget(id: string) { s().setTarget(id); s().interact(); }
 beforeEach(() => { vi.useFakeTimers(); s().reset(); useLab.setState({ tutorialDone: true, records: [] }); s().start('guided'); });

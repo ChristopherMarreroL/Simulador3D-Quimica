@@ -7,7 +7,16 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "test": "vitest run",
-    "preview": "vite preview --host 127.0.0.1"
+    "golden": "vitest run --config vitest.golden.config.ts",
+    "golden:steps": "vitest run --config vitest.golden.config.ts golden/steps/export.steps.ts",
+    "preview": "vite preview --host 127.0.0.1",
+    "desktop:build": "tsc -b && vite build --base ./",
+    "desktop": "npm run desktop:build && electron .",
+    "desktop:dev": "electron . --dev-url=http://127.0.0.1:5173",
+    "dist:win": "npm run desktop:build && electron-builder --win",
+    "campana:dev": "vite --config web-campana/vite.config.ts",
+    "campana:build": "tsc -p web-campana && vite build --config web-campana/vite.config.ts",
+    "campana:preview": "vite preview --config web-campana/vite.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,8 +35,54 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
+  },
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "com.experimenta3d.lab",
+    "productName": "Experimenta 3D",
+    "copyright": "Experimenta 3D",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "build/icon.png",
+      "package.json",
+      "!**/node_modules/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Experimenta 3D",
+      "artifactName": "Experimenta3D-Setup-${version}.exe"
+    },
+    "portable": {
+      "artifactName": "Experimenta3D-portable-${version}.exe"
+    }
   }
 }

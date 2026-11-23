@@ -55,4 +55,18 @@ El usuario autorizó añadir experimentos después del MVP. Se añadieron conduc
 
 `src/ui/Notebook.tsx` adapta ambos formatos de registro a una vista de anotaciones. Cada ensayo muestra su resultado principal y materiales; la explicación completa se carga dentro de un desplegable. Las anotaciones se editan por identificador de ensayo, incluyendo ensayos anteriores.
 
+## Campana de mezclas libres
+
+`src/chemistry/sandbox.ts` es un motor puro de mezcla sobre especies (`species.ts`), constantes (`constants.ts`) y el catálogo de 27 reactivos (`reagents.ts`). Las reglas se aplican en pasadas sucesivas hasta que no hay cambios: reacciones completas por prioridad, desplazamientos generados a partir de E° y equilibrios de solubilidad bidireccionales. `src/state/hood.ts` guarda dónde está cada frasco (estantería, mano o bandeja), el vertido temporizado, los controles de la campana y las mezclas guardadas. `lab.ts` delega en él los objetivos `reagent:<id>`, `reagent-shelf`, `hood` y `hood-sash`, y comparte la ocupación de las manos. La escena (`FumeHood.tsx`, `ReagentShelf.tsx`, `ReagentBottle.tsx`) lee el estado y anima los efectos sin cálculos químicos propios. Detalles y fuentes en `CAMPANA_MEZCLAS.md`.
+
+El aspecto realista se apoya en `materials.ts` (texturas procedurales deterministas compartidas), `RoomShell.tsx` (paredes con aberturas de ventana, exterior, oclusión ambiental y sombras de contacto) y `LabProps.tsx` (atrezo decorativo inspirado en las fotos). Las encimeras usan UV en metros para mantener la escala del granito. Las luminarias del techo no proyectan sombras. `src/state/settings.ts` guarda calidad y sensibilidad; la calidad Media reduce la resolución y desactiva la sombra del sol.
+
+La app de escritorio (`electron/main.cjs`) carga la misma compilación de Vite con rutas relativas; no hay código exclusivo de escritorio en la página salvo la detección del agente de usuario para elegir Ultra por defecto. `PostEffects.tsx` toma el fotograma con prioridad 1 de `useFrame` solo en Ultra. `StaticBatch.tsx` fusiona geometría estática al montarse; sus hijos no deben cambiar ni ser interactivos (las encimeras interactivas, la estantería y la campana quedan fuera).
+
+El procedimiento real también vive en `hood.ts`: `cylinder`, `balance`, `transfer` (animaciones de 1,5 s) y `recipe` (progreso pegajoso: cantidades añadidas, observado, guardado, desechado). `recipeSteps()` deriva los pasos y sus objetivos de escena a partir del estado; `GuideProps.tsx` los dibuja como flechas y en el tablero, y `App.tsx` como lista. `lab.ts` exige la protección (`ppe`) para los objetivos `reagent:*` y delega `hood-cylinder`, `hood-balance`, `hood-washbottle`, `hood-waste`, `ppe-*` y `recipe-board`.
+
+El vertido continuo vive en `hood.ts` (`startStream`, `streamTick`, `stopStream`): `Player.tsx` lo inicia con el clic sostenido sobre el matraz y lo detiene al soltar, al mirar a otro lado o al pausar; cada paso de 2,5 mL (0,1 g o 1 gota) pasa por el motor químico y se une al mismo registro.
+
+Las manos se animan en `Player.tsx` (solo las manos; la cámara no oscila) y `Hands.tsx` cierra los dedos según una pose compartida. La iluminación usa un mapa de entorno generado por `RoomEnvironment` con `PMREMGenerator`, sin archivos externos.
+
 Los fregaderos ahora usan una abertura real en la geometría de la encimera, paredes de cubeta y fondo con desagüe. El grifo se modela con un tubo continuo que parte de su base. Las manos procedurales se separaron en `Hands.tsx`, con palma, dedos y pulgar, puño y manga alineados; cambian de postura al sostener un objeto.
