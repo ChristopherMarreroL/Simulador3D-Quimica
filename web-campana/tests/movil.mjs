@@ -1,11 +1,11 @@
 // Prueba de la versión móvil con emulación de teléfono (pantalla táctil, 844 × 390, horizontal): toques reales por
-// CDP sobre la palanca, el arrastre para mirar y los botones USAR y MANTENER. Guarda capturas en SALIDA.
+// (TAMANO=760x300 imita un iPhone en Safari con la barra del navegador). CDP sobre la palanca, el arrastre para mirar y los botones USAR y MANTENER. Guarda capturas en SALIDA.
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 const salida = process.env.SALIDA || 'test-results/campana-web/movil';
 mkdirSync(salida, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', headless: true, args: ['--use-angle=d3d11', '--ignore-gpu-blocklist'] });
-const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Mobile Safari/537.36' });
+const ctx = await browser.newContext({ viewport: { width: Number((process.env.TAMANO || '844x390').split('x')[0]), height: Number((process.env.TAMANO || '844x390').split('x')[1]) }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Mobile Safari/537.36' });
 const page = await ctx.newPage();
 const cdp = await ctx.newCDPSession(page);
 const errores = []; page.on('pageerror', e => errores.push(e.message)); page.on('console', m => { if (m.type() === 'error') errores.push(m.text()); });

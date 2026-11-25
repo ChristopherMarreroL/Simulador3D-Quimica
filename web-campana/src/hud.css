@@ -228,3 +228,31 @@ body.tactil .tp-rejilla { gap: 2px; }
 body.tactil .tp-ficha .simbolo { width: 60px; height: 62px; padding: 4px; }
 body.tactil .tp-ficha .simbolo span { font-size: 9px; }
 body.tactil .tp-ficha .simbolo small { font-size: 9px; }
+
+/* ---------- Teléfonos reales (foto de un iPhone en Safari, 25 de noviembre de 2026): pantalla baja con la barra del
+   navegador, isla o muesca a un lado. Bordes seguros, botones en una fila y paneles que no llegan a los botones. ---------- */
+body.tactil { --izq: max(8px, env(safe-area-inset-left)); --der: max(8px, env(safe-area-inset-right)); --abajo: max(8px, env(safe-area-inset-bottom)); }
+body.tactil #lienzo { height: 100dvh; }
+body.tactil .tarea { left: var(--izq); width: min(210px, 26vw); max-height: calc(100dvh - 150px); }
+body.tactil .pista { right: var(--der); width: min(240px, 30vw); max-height: calc(100dvh - 118px); }
+body.tactil .palanca { left: calc(var(--izq) + 6px); bottom: calc(var(--abajo) + 4px); width: 104px; height: 104px; }
+body.tactil .palanca i { width: 44px; height: 44px; }
+body.tactil .botones { right: var(--der); bottom: var(--abajo); display: flex; align-items: flex-end; gap: 7px; }
+body.tactil .bt { width: 66px; height: 66px; font-size: 11.5px; }
+body.tactil .bt small { font-size: 8px; }
+body.tactil .bt.principal { width: 78px; height: 78px; font-size: 15px; }
+body.tactil .bt.pequeno { width: 54px; height: 54px; font-size: 10.5px; }
+body.tactil .bt.mini { width: auto; height: 28px; padding: 0 8px; font-size: 11px; border-radius: 14px; }
+body.tactil .barra-tactil { top: max(4px, env(safe-area-inset-top)); }
+body.tactil .mensaje { top: 38px; bottom: auto; max-width: calc(100vw - 2 * min(240px, 30vw) - 2 * var(--der) - 16px); font-size: 11px; padding: 5px 9px; }
+body.tactil .reaccion { top: auto; bottom: calc(var(--abajo) + 4px); max-width: calc(100vw - 420px); }
+body.tactil .resultado { bottom: calc(var(--abajo) + 4px); }
+body.tactil .misiones, body.tactil .portada, body.tactil .pausa { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); height: 100dvh; }
+@media (max-height: 340px) {
+  body.tactil .pista ol { font-size: 10px; gap: 2px; }
+  body.tactil .pista b { font-size: 11.5px; }
+  body.tactil .tarea h3 { font-size: 12px; }
+  body.tactil .palanca { width: 92px; height: 92px; }
+}
+body.tactil .bt.mini { padding: 0 6px; font-size: 10.5px; height: 27px; }
+body.tactil .barra-tactil { z-index: 3; gap: 3px; }
