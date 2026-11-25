@@ -5,6 +5,7 @@ import { useLab } from '../../src/state/lab';
 import { NOMBRES } from './objetos';
 import type { Guia } from './guia';
 import type { Partida } from './partida';
+import { adaptarTexto, esTactil } from './tactil';
 import { PERFILES, type Calidad } from './util';
 
 /** Interfaz en español: misión y pasos, aviso contextual, manos, mensaje, reacción, resultado, tablero de misiones y pausa. */
@@ -17,6 +18,7 @@ export class Hud {
   private ultimo = '';
   private ultimaReaccion = '';
   private misionesAbierto = false;
+  private misionesDesde = 0;
   constructor(raiz: HTMLElement, calidad: Calidad, private acciones: { empezar: () => void; calidad: (c: Calidad) => void; reiniciar: () => void; elegir: (id: string | null) => void }) {
     this.raiz = raiz;
     raiz.innerHTML = `
@@ -42,6 +44,11 @@ export class Hud {
           <li><b>1 / 2</b> mano izquierda / derecha · <b>M</b> misiones · <b>H</b> pistas · <b>N</b> anotar · <b>clic derecho</b> mirar de cerca</li>
           <li><b>Esc</b> pausa</li>
         </ul>
+        <ul class="controles tactiles">
+          <li><b>Palanca izquierda</b> caminar · <b>arrastra el dedo</b> por la pantalla para mirar</li>
+          <li><b>USAR</b> coger, verter la probeta, anotar · <b>MANTENER</b> llenar, pesar o gotear · <b>DEJAR</b> soltar el frasco</li>
+          <li>Apunta con el punto del centro de la pantalla. Arriba: manos, misiones, pistas y pausa.</li>
+        </ul>
       </section>
       <section class="misiones" data-k="misiones" hidden>
         <header><h2>Tablero de misiones</h2><button data-k="cerrarMisiones" class="boton secundario">Volver al laboratorio</button></header>
@@ -64,6 +71,8 @@ export class Hud {
     this.el.verMisiones.addEventListener('click', () => this.abrirMisiones());
     this.el.cerrarMisiones.addEventListener('click', () => { this.misionesAbierto = false; acciones.empezar(); });
     this.el.listaMisiones.addEventListener('click', e => {
+      // En táctil, el mismo toque que abre el tablero no debe elegir la misión que queda bajo el dedo.
+      if (this.tactil && performance.now() - this.misionesDesde < 450) return;
       const b = (e.target as HTMLElement).closest<HTMLElement>('[data-mision]');
       if (!b) return;
       acciones.elegir(b.dataset.mision === 'libre' ? null : b.dataset.mision!);
@@ -74,12 +83,15 @@ export class Hud {
 
   /** Solo toca el DOM cuando el contenido cambia (rehacerlo cada fotograma cuesta FPS en equipos modestos). */
   private cache: Record<string, string> = {};
-  private poner(k: string, html: string) { if (this.cache[k] !== html) { this.cache[k] = html; this.el[k].innerHTML = html; } }
+  private tactil = esTactil();
+  /** En pantalla táctil las instrucciones nombran los botones en vez de las teclas. */
+  private texto(t: string) { return this.tactil ? adaptarTexto(t) : t; }
+  private poner(k: string, html: string) { if (this.cache[k] !== html) { this.cache[k] = html; this.el[k].innerHTML = this.texto(html); } }
   progreso(t: string) { this.el.progreso.textContent = t; }
   listo() { this.el.cargando.hidden = true; this.el.portada.hidden = false; }
   /** Abre el tablero de misiones (suelta el ratón para poder elegir). */
   abrirMisiones(completadas: Set<string> = this.completadas) {
-    this.misionesAbierto = true;
+    this.misionesAbierto = true; this.misionesDesde = performance.now();
     const actual = useHood.getState().recipe?.id;
     this.el.listaMisiones.innerHTML = `<button class="mision libre" data-mision="libre"><b>Mezcla libre</b><span>Combina cualquiera de los 27 reactivos y observa qué predice el modelo: color, gas, precipitado, pH y temperatura.</span></button>`
       + hoodRecipes.map(r => `<button class="mision ${completadas.has(r.id) ? 'hecha' : ''} ${actual === r.id ? 'actual' : ''}" data-mision="${r.id}">
@@ -110,7 +122,7 @@ export class Hud {
       this.el.senal.style.transform = `translate(${(senal!.x * window.innerWidth).toFixed(0)}px, ${(senal!.y * window.innerHeight).toFixed(0)}px) translate(-50%, -100%)`;
       this.el.senal.classList.toggle('fuera', senal!.fuera);
       this.el.senalFlecha.style.transform = senal!.fuera ? `rotate(${(senal!.angulo - Math.PI / 2).toFixed(2)}rad)` : '';
-      const texto = `${g.etiqueta}${senal!.fuera || senal!.metros > 2.5 ? ` · ${senal!.metros.toFixed(0)} m` : ''}`;
+      const texto = this.texto(`${g.etiqueta}${senal!.fuera || senal!.metros > 2.5 ? ` · ${senal!.metros.toFixed(0)} m` : ''}`);
       if (this.el.senalTexto.textContent !== texto) this.el.senalTexto.textContent = texto;
     }
     const m = g.medidor;
@@ -175,16 +187,16 @@ export class Hud {
       if (def) {
         const hechos = pasos.filter(p => p.done).length;
         const actual = pasos.findIndex(p => !p.done);
-        this.el.tarea.innerHTML = `<h3>${esc(def.title)}</h3><p class="ecuacion">${esc(def.equation)}</p>
+        this.el.tarea.innerHTML = this.texto(`<h3>${esc(def.title)}</h3><p class="ecuacion">${esc(def.equation)}</p>
           <div class="barra"><i style="width:${(100 * hechos / pasos.length).toFixed(0)}%"></i></div>
-          <ol>${pasos.map((p, i) => `<li class="${p.done ? 'hecho' : i === actual ? 'actual' : ''}"><span>${esc(p.title)}</span>${i === actual ? `<small>${esc(p.detail)}</small>` : ''}</li>`).join('')}</ol>`;
+          <ol>${pasos.map((p, i) => `<li class="${p.done ? 'hecho' : i === actual ? 'actual' : ''}"><span>${esc(p.title)}</span>${i === actual ? `<small>${esc(p.detail)}</small>` : ''}</li>`).join('')}</ol>`);
       } else if (partida.modo === 'libre') {
-        this.el.tarea.innerHTML = `<h3>Mezcla libre</h3>
+        this.el.tarea.innerHTML = this.texto(`<h3>Mezcla libre</h3>
           <p>Líquidos: mídelos en la <b>probeta</b>. Sólidos: pésalos en la <b>balanza</b>. Indicadores: gotas directas al <b>matraz</b>.</p>
           ${h.mixture.additions.length ? `<ol>${h.mixture.additions.map(a => `<li class="hecho"><span>${esc(amountText(a.reagent, a.amount))} de ${esc(reagents[a.reagent].name)}</span></li>`).join('')}</ol><p>Vacía el matraz en <b>residuos</b> para empezar otra mezcla.</p>` : '<p>El matraz está vacío.</p>'}
-          <p><b>M</b> · cambiar a una misión</p>`;
+          <p><b>M</b> · cambiar a una misión</p>`);
       } else {
-        this.el.tarea.innerHTML = `<h3>Laboratorio de química</h3><p>1. Ponte <b>gafas y guantes</b> junto a la puerta.</p><p>2. Elige una <b>misión</b> o la <b>mezcla libre</b> en el tablero del fondo, o pulsa <b>M</b>.</p>`;
+        this.el.tarea.innerHTML = this.texto(`<h3>Laboratorio de química</h3><p>1. Ponte <b>gafas y guantes</b> junto a la puerta.</p><p>2. Elige una <b>misión</b> o la <b>mezcla libre</b> en el tablero del fondo, o pulsa <b>M</b>.</p>`);
       }
     }
 
@@ -199,7 +211,8 @@ export class Hud {
         : `<b>${esc(r!.cantidad)} de ${esc(r!.reactivo)}</b><span>${esc(r!.nota || 'Sin cambios según el modelo.')}</span>`;
     }
 
-    if (this.el.mensaje.textContent !== lab.message) this.el.mensaje.textContent = lab.message;
+    const mensaje = this.texto(lab.message);
+    if (this.el.mensaje.textContent !== mensaje) this.el.mensaje.textContent = mensaje;
     this.el.mensaje.hidden = !lab.message;
 
     const casilla = (lado: Hand) => {

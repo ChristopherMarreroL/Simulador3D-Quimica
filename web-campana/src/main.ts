@@ -8,14 +8,17 @@ import { Jugador } from './jugador';
 import { Objetos } from './objetos';
 import { Partida } from './partida';
 import { recorrido } from './recorrido';
+import { esTactil, montarTactil } from './tactil';
 import { guardarCalidad, leerCalidad, PERFILES } from './util';
 
-const calidad = leerCalidad();
+// En pantalla táctil (teléfono o tableta) se arranca en calidad Baja; se puede subir en la pausa.
+const tactil = esTactil();
+const calidad = leerCalidad(tactil ? 'baja' : 'media');
 const perfil = PERFILES[calidad];
 const parametros = new URLSearchParams(location.search);
 const lienzo = document.getElementById('lienzo') as HTMLCanvasElement;
 const renderer = new THREE.WebGLRenderer({ canvas: lienzo, antialias: perfil.msaa, powerPreference: 'high-performance', stencil: false });
-renderer.setPixelRatio(perfil.escala * Math.min(window.devicePixelRatio, 1.25));
+renderer.setPixelRatio(perfil.escala * Math.min(window.devicePixelRatio, tactil ? 1.6 : 1.25));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 // Cámara física de Unreal (ISO 400, 1/60 s, f/2,8 con compensación): aquí, AgX y una exposición fija calibrada
@@ -32,7 +35,14 @@ escena.add(jugador.camara);
 const partida = new Partida();
 let empezado = false;
 const hud = new Hud(document.getElementById('hud')!, calidad, {
-  empezar: () => { if (parametros.has('recorrido')) hud.pausa(false, false); else void lienzo.requestPointerLock(); },
+  empezar: () => {
+    if (parametros.has('recorrido')) hud.pausa(false, false);
+    else if (tactil) {
+      // Sin ratón que capturar: la partida arranca al tocar el botón. Pantalla completa y horizontal si el navegador deja.
+      empezado = true; jugador.activo = true; hud.pausa(false, false);
+      document.documentElement.requestFullscreen?.().then(() => (screen.orientation as unknown as { lock?: (o: string) => Promise<void> }).lock?.('landscape')).catch(() => {});
+    } else void lienzo.requestPointerLock();
+  },
   calidad: c => { guardarCalidad(c); const u = new URL(location.href); u.searchParams.delete('calidad'); location.href = u.toString(); },
   reiniciar: () => partida.iniciar(),
   elegir: id => partida.elegir(id),
@@ -44,7 +54,9 @@ window.addEventListener('resize', () => {
   jugador.camara.updateProjectionMatrix();
 });
 document.addEventListener('pointerlockchange', () => {
+  if (tactil) return;
   const capturado = document.pointerLockElement === lienzo;
+  jugador.activo = capturado;
   if (capturado) empezado = true;
   hud.pausa(!capturado, !empezado);
   if (!capturado) partida.soltarUsar();
@@ -59,7 +71,9 @@ async function arrancar() {
   hud.progreso('Colocando el material…');
   const objetos = await Objetos.crear(sala.datos);
   partida.ambiente = id => objetos.ambiente(id);
-  partida.alAbrirMisiones = () => hud.abrirMisiones();
+  const abrirMisiones = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); } hud.abrirMisiones(); };
+  const pausar = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); hud.pausa(true, false); } else document.exitPointerLock(); };
+  partida.alAbrirMisiones = abrirMisiones;
   escena.add(objetos.raiz);
   await jugador.cargarManos();
   // Primera compilación de los materiales y captura de los reflejos del cuarto.
@@ -71,10 +85,14 @@ async function arrancar() {
     dejar: () => partida.dejar(),
     mano: m => partida.cambiarMano(m),
     anotar: () => partida.anotar(),
-    misiones: () => hud.abrirMisiones(),
+    misiones: abrirMisiones,
     pistas: () => hud.alternarPistas(),
-    pausa: () => document.exitPointerLock(),
+    pausa: pausar,
   });
+  const mandos = tactil ? montarTactil(document.getElementById('hud')!, lienzo, jugador, {
+    usar: (pulsado, tecla) => { if (pulsado) partida.pulsarUsar(tecla); else partida.soltarUsar(); },
+    dejar: () => partida.dejar(), mano: m => partida.cambiarMano(m), misiones: abrirMisiones, pistas: () => hud.alternarPistas(), pausa: pausar,
+  }) : null;
   hud.listo();
 
   const reloj = new THREE.Clock();
@@ -104,6 +122,7 @@ async function arrancar() {
     }
     hud.actualizar(partida, objetivo, objetos.suspension);
     hud.guiar(guia, senal, objetivo);
+    mandos?.marcarMano(useLab.getState().hand);
     renderer.render(escena, jugador.camara);
     // Medidor de fotogramas (pausa y recorrido automático).
     fps.cuadros++; fps.tiempos.push(dt * 1000); if (fps.tiempos.length > 600) fps.tiempos.shift();

@@ -40,6 +40,10 @@ export class Jugador {
   private mirarCerca = false;
   private gesto: Record<Hand, number> = { left: 0, right: 0 };
   sensibilidad = 0.0022;
+  /** El juego recibe entrada: ratón capturado en escritorio, o partida en marcha en pantalla táctil. */
+  activo = false;
+  /** Palanca táctil de movimiento (x derecha, y hacia atrás), de -1 a 1. */
+  readonly palanca = new THREE.Vector2();
   vertiendoMano: Hand | null = null;
 
   constructor(aspecto: number) {
@@ -80,7 +84,7 @@ export class Jugador {
 
   conectar(elemento: HTMLElement, acciones: { usar: (pulsado: boolean, tecla: boolean) => void; dejar: () => void; mano: (m: Hand) => void; anotar: () => void; misiones: () => void; pistas: () => void; pausa: () => void }) {
     document.addEventListener('keydown', e => {
-      if (document.pointerLockElement !== elemento) return;
+      if (!this.activo) return;
       if (e.repeat) { if (e.code !== 'KeyE') this.teclas.add(e.code); return; }
       this.teclas.add(e.code);
       if (e.code === 'KeyE') acciones.usar(true, true);
@@ -93,8 +97,8 @@ export class Jugador {
       else if (e.code === 'KeyP') acciones.pausa();
     });
     document.addEventListener('keyup', e => { this.teclas.delete(e.code); });
-    elemento.addEventListener('mousedown', e => {
-      if (document.pointerLockElement !== elemento) return;
+    elemento.addEventListener('pointerdown', e => {
+      if (!this.activo || e.pointerType === 'touch' || document.pointerLockElement !== elemento) return;
       if (e.button === 0) acciones.usar(true, false);
       if (e.button === 2) this.mirarCerca = true;
     });
@@ -102,10 +106,15 @@ export class Jugador {
     elemento.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('mousemove', e => {
       if (document.pointerLockElement !== elemento) return;
-      this.guinada -= e.movementX * this.sensibilidad;
-      this.cabeceo = clamp(this.cabeceo - e.movementY * this.sensibilidad, -1.45, 1.35);
+      this.girar(e.movementX, e.movementY);
     });
     window.addEventListener('blur', () => this.teclas.clear());
+  }
+
+  /** Gira la vista (píxeles de ratón o de arrastre táctil). */
+  girar(dx: number, dy: number) {
+    this.guinada -= dx * this.sensibilidad;
+    this.cabeceo = clamp(this.cabeceo - dy * this.sensibilidad, -1.45, 1.35);
   }
 
   private aplicarVista() { this.camara.rotation.set(this.cabeceo, this.guinada, 0); }
@@ -137,9 +146,10 @@ export class Jugador {
       if (this.teclas.has('KeyS') || this.teclas.has('ArrowDown')) az += 1;
       if (this.teclas.has('KeyA') || this.teclas.has('ArrowLeft')) ax -= 1;
       if (this.teclas.has('KeyD') || this.teclas.has('ArrowRight')) ax += 1;
+      ax += this.palanca.x; az += this.palanca.y;
     }
     const largo = Math.hypot(ax, az);
-    const velocidad = (this.teclas.has('ShiftLeft') || this.teclas.has('ShiftRight') ? 2.6 : 1.45);
+    const velocidad = (this.teclas.has('ShiftLeft') || this.teclas.has('ShiftRight') ? 2.6 : 1.45) * Math.min(1, largo);
     if (largo > 0) {
       const s = Math.sin(this.guinada), c = Math.cos(this.guinada);
       const vx = (ax * c + az * s) / largo * velocidad * dt, vz = (-ax * s + az * c) / largo * velocidad * dt;

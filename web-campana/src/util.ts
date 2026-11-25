@@ -14,11 +14,11 @@ export const suave = (t: number) => { const x = clamp(t, 0, 1); return x * x * (
 /** Calidad gráfica: los mismos tres niveles que el menú de pausa de Unreal. */
 export type Calidad = 'baja' | 'media' | 'alta';
 const CLAVE_CALIDAD = 'experimenta.campana.calidad';
-export function leerCalidad(): Calidad {
+export function leerCalidad(defecto: Calidad = 'media'): Calidad {
   const url = new URLSearchParams(location.search).get('calidad');
   if (url === 'baja' || url === 'media' || url === 'alta') return url;
   try { const v = localStorage.getItem(CLAVE_CALIDAD); if (v === 'baja' || v === 'media' || v === 'alta') return v; } catch { /* sin almacenamiento */ }
-  return 'media';
+  return defecto;
 }
 export function guardarCalidad(c: Calidad) { try { localStorage.setItem(CLAVE_CALIDAD, c); } catch { /* sin almacenamiento */ } }
 export const PERFILES: Record<Calidad, { escala: number; msaa: boolean; anisotropia: number; entorno: number; texto: string }> = {

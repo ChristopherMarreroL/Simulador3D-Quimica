@@ -1,6 +1,6 @@
 # Experimenta 3D — Contexto actualizado del proyecto
 
-Última actualización: 23 de noviembre de 2026.
+Última actualización: 25 de noviembre de 2026.
 
 Este archivo es el punto de entrada para continuar el proyecto en futuras sesiones. Resume las decisiones del usuario, el estado implementado y los pendientes. Las instrucciones operativas principales están en el `AGENTS.md` de la raíz. El encargo original íntegro se conserva en [CONTEXTO_MAESTRO.md](CONTEXTO_MAESTRO.md).
 
@@ -454,6 +454,16 @@ El usuario pidió que las misiones guíen a un estudiante que no sabe nada de la
 - Panel «Qué hacer ahora» arriba a la derecha (tecla **H** lo oculta), flecha de tamaño constante sobre el objeto con su etiqueta, indicador en el borde de la pantalla con la distancia cuando el objeto queda fuera de la vista, y medidor en vivo (mL, g o gotas frente a lo que pide la misión).
 - Comprobado con el recorrido automático de «Vinagre y bicarbonato» y `tests/teclado.mjs`, sin errores. No lo ha probado todavía una persona.
 - Límite: el orden de los pasos es el de la capa validada (primero reunir todos los reactivos, lo que obliga a usar las dos manos o la bandeja); la guía lo explica pero no lo cambia.
+
+## Versión para móviles (24–25 de noviembre de 2026)
+
+El usuario pidió una versión para dispositivos móviles de lo publicado en Vercel. Es la misma aplicación (`web-campana/`), que detecta la pantalla táctil (`(pointer: coarse)` o `?movil`) y cambia controles e interfaz; se hizo sobre la versión local actual, que incluye lo posterior al despliegue del día 20 (ventana, material, viveza y guía).
+
+- `web-campana/src/tactil.ts`: palanca izquierda para caminar, arrastrar el dedo para mirar, botones USAR (= E), MANTENER (= clic mantenido: llenar, pesar, gotear) y DEJAR (= Q), y barra con Mano 1, Mano 2, Misiones, Pistas y pausa. Llaman a las mismas acciones que el teclado: no hay lógica nueva.
+- Sin captura de ratón: `Jugador.activo` sustituye a la comprobación de `pointerLockElement`. Arranca en calidad Baja, pide pantalla completa y horizontal, y avisa de girar el teléfono en vertical.
+- Interfaz compacta en `hud.css` (`body.tactil`): solo el paso actual, pistas desplazables, y las instrucciones nombran los botones en vez de las teclas (`adaptarTexto`).
+- Comprobado con `web-campana/tests/movil.mjs` (emulación de teléfono 844 × 390 con toques reales por CDP): palanca, giro, protección, tablero, elegir misión, coger un frasco, llenar 20 mL manteniendo el dedo, verter y pausa, sin errores. `tests/teclado.mjs` y el recorrido de escritorio siguen pasando. **No se ha probado en un teléfono real** ni se ha medido su rendimiento.
+- Sin publicar todavía: el servidor local solo escucha en 127.0.0.1, así que para abrirlo en un teléfono hay que publicarlo.
 
 ## Continuidad entre sesiones
 
