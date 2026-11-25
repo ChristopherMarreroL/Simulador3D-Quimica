@@ -94,6 +94,10 @@ export class Hud {
       acciones.elegir(b.dataset.mision === 'libre' ? null : b.dataset.mision!);
       this.misionesAbierto = false; acciones.empezar();
     });
+    // Versión móvil: cada cuadro se pliega al tocarlo (en ordenador no reciben clics y no cambia nada).
+    this.el.tarea.addEventListener('click', () => { if (this.tactil) this.el.tarea.classList.toggle('plegado'); });
+    this.el.pista.addEventListener('click', () => { if (this.tactil) this.alternarPistas(); });
+    this.el.mensaje.addEventListener('click', () => { if (this.tactil) { this.mensajeDescartado = this.el.mensaje.textContent ?? ''; this.el.mensaje.hidden = true; } });
     (this.el.calidad as HTMLSelectElement).addEventListener('change', e => acciones.calidad((e.target as HTMLSelectElement).value as Calidad));
   }
 
@@ -163,12 +167,16 @@ export class Hud {
   fps(texto: string) { this.el.fps.textContent = texto; }
 
   private pistasVisibles = true;
+  private mensajeDescartado = '';
+  /** Oculta o muestra de una vez todos los cuadros de texto (botón de la barra táctil). Devuelve si quedan ocultos. */
+  alternarCuadros() { return this.raiz.classList.toggle('sin-cuadros'); }
   alternarPistas() { this.pistasVisibles = !this.pistasVisibles; }
   /** Pista del paso actual, señal hacia el objeto y medidor de la cantidad en curso. */
   guiar(g: Guia, senal: { x: number; y: number; fuera: boolean; angulo: number; metros: number } | null, objetivo: string | null) {
     this.poner('pista', this.pistasVisibles
       ? `<h4>Qué hacer ahora <kbd>H</kbd></h4><b>${esc(g.titulo)}</b><ol>${g.lineas.map(l => `<li>${esc(l)}</li>`).join('')}</ol>`
-      : '<h4>Pistas ocultas <kbd>H</kbd></h4>');
+      : this.tactil ? '<h4>Pistas ▸</h4>' : '<h4>Pistas ocultas <kbd>H</kbd></h4>');
+    this.el.pista.classList.toggle('plegado', !this.pistasVisibles);
     const ver = !!senal && this.pistasVisibles;
     this.el.senal.hidden = !ver;
     if (ver) {
@@ -267,7 +275,7 @@ export class Hud {
 
     const mensaje = this.texto(lab.message);
     if (this.el.mensaje.textContent !== mensaje) this.el.mensaje.textContent = mensaje;
-    this.el.mensaje.hidden = !lab.message;
+    this.el.mensaje.hidden = !lab.message || mensaje === this.mensajeDescartado;
 
     const casilla = (lado: Hand) => {
       const id = h.heldIn(lado);

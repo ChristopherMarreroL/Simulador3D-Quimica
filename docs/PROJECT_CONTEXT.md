@@ -475,6 +475,8 @@ El usuario señaló que el póster decía «la versión interactiva está en el 
 
 **Ajuste para teléfonos reales (misma fecha).** El usuario envió una foto del laboratorio en un iPhone (Safari, horizontal): la isla tapaba el panel de la tarea, el panel de pistas cubría el botón DEJAR y el de pausa, y el mensaje pisaba los botones. `hud.css` usa ahora los bordes seguros (`env(safe-area-inset-*)`), `100dvh`, los tres botones de acción en una fila, paneles que no llegan a la zona de botones, el mensaje arriba y la barra superior más compacta. `tests/movil.mjs` acepta `TAMANO` (por ejemplo `760x300`, la zona útil de un iPhone con la barra de Safari) y pasa también a 667 × 320. Safari de iPhone no permite pantalla completa, así que la barra del navegador sigue ocupando sitio.
 
+**Cuadros plegables en móvil (misma fecha).** A petición del usuario, en pantalla táctil el cuadro de la misión, el de pistas y el mensaje se pliegan al tocarlos (quedan como una pastilla con su título) y el botón «Ocultar» de la barra quita todos a la vez (`#hud.sin-cuadros`). En ordenador no cambia nada. `tests/movil.mjs` lo comprueba. Publicado el mismo día.
+
 **Publicación.** El usuario indicó «publicado inmediatamente termines» durante esta tanda de correcciones; con esa indicación se publicaron la tabla y el ajuste móvil en https://labquimica3d.vercel.app el 25 de noviembre, comprobados contra la URL (`movil.mjs` a 760 × 300 y `tabla.mjs`, sin errores). Fuera de una indicación así, preguntar antes de publicar.
 
 ## Continuidad entre sesiones

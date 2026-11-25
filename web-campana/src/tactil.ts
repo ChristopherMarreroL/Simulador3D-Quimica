@@ -6,6 +6,7 @@ import type { Jugador } from './jugador';
  * llaman a las mismas acciones que el teclado y el ratón.
  *  - Palanca izquierda: caminar. Arrastrar el dedo por el resto de la pantalla: mirar.
  *  - USAR = tecla E (coger, verter la probeta, enjuagar, anotar…). VERTER = mantener el clic (llenar, pesar, gotear).
+ *  - Los cuadros de misión, pistas y mensaje se pliegan al tocarlos, y «Ocultar» los quita todos a la vez.
  *  - DEJAR = Q. Las casillas de las manos cambian de mano; MISIONES, PISTAS y PAUSA arriba.
  */
 export const esTactil = () => new URLSearchParams(location.search).has('movil') || window.matchMedia('(pointer: coarse)').matches;
@@ -26,7 +27,7 @@ export const adaptarTexto = (t: string) => CAMBIOS.reduce((s, [de, a]) => s.repl
 
 export interface AccionesTactiles {
   usar: (pulsado: boolean, tecla: boolean) => void; dejar: () => void; mano: (m: Hand) => void;
-  misiones: () => void; cuaderno: () => void; pistas: () => void; pausa: () => void;
+  misiones: () => void; cuaderno: () => void; pistas: () => void; cuadros: () => boolean; pausa: () => void;
 }
 
 export function montarTactil(raiz: HTMLElement, lienzo: HTMLElement, jugador: Jugador, acciones: AccionesTactiles) {
@@ -42,7 +43,7 @@ export function montarTactil(raiz: HTMLElement, lienzo: HTMLElement, jugador: Ju
     </div>
     <div class="barra-tactil">
       <button data-t="mano1" class="bt mini">Mano 1</button><button data-t="mano2" class="bt mini">Mano 2</button>
-      <button data-t="misiones" class="bt mini">Misiones</button><button data-t="cuaderno" class="bt mini">Cuaderno</button><button data-t="pistas" class="bt mini">Pistas</button><button data-t="pausa" class="bt mini">II</button>
+      <button data-t="misiones" class="bt mini">Misiones</button><button data-t="cuaderno" class="bt mini">Cuaderno</button><button data-t="pistas" class="bt mini">Pistas</button><button data-t="cuadros" class="bt mini" title="Ocultar o mostrar los cuadros">Ocultar</button><button data-t="pausa" class="bt mini">II</button>
     </div>
     <div class="gira">Gira el teléfono a horizontal para jugar</div>`;
   raiz.append(capa);
@@ -79,6 +80,7 @@ export function montarTactil(raiz: HTMLElement, lienzo: HTMLElement, jugador: Ju
   toque('misiones', acciones.misiones);
   toque('cuaderno', acciones.cuaderno);
   toque('pistas', acciones.pistas);
+  toque('cuadros', () => { const ocultos = acciones.cuadros(); el('cuadros').textContent = ocultos ? 'Mostrar' : 'Ocultar'; el('cuadros').classList.toggle('activa', ocultos); });
   toque('pausa', acciones.pausa);
   const verter = el('verter');
   verter.addEventListener('pointerdown', e => { e.preventDefault(); if (!jugador.activo) return; verter.setPointerCapture(e.pointerId); verter.classList.add('pulsado'); acciones.usar(true, false); });

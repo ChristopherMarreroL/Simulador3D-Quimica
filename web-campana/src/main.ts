@@ -101,7 +101,7 @@ async function arrancar() {
   });
   const mandos = tactil ? montarTactil(document.getElementById('hud')!, lienzo, jugador, {
     usar: (pulsado, tecla) => { if (pulsado) partida.pulsarUsar(tecla); else partida.soltarUsar(); },
-    dejar: () => partida.dejar(), mano: m => partida.cambiarMano(m), misiones: abrirMisiones, cuaderno: abrirCuaderno, pistas: () => hud.alternarPistas(), pausa: pausar,
+    dejar: () => partida.dejar(), mano: m => partida.cambiarMano(m), misiones: abrirMisiones, cuaderno: abrirCuaderno, cuadros: () => hud.alternarCuadros(), pistas: () => hud.alternarPistas(), pausa: pausar,
   }) : null;
   hud.listo();
 

@@ -256,3 +256,16 @@ body.tactil .misiones, body.tactil .portada, body.tactil .pausa { padding-left: 
 }
 body.tactil .bt.mini { padding: 0 6px; font-size: 10.5px; height: 27px; }
 body.tactil .barra-tactil { z-index: 3; gap: 3px; }
+
+/* Cuadros plegables en móvil: tocar el cuadro lo reduce a una pastilla; «Ocultar» los quita todos. */
+body.tactil .tarea, body.tactil .mensaje { pointer-events: auto; }
+body.tactil .tarea.plegado, body.tactil .pista.plegado { width: auto; max-height: none; padding: 5px 10px; border-radius: 14px; overflow: hidden; }
+body.tactil .tarea.plegado > :not(h3) { display: none; }
+body.tactil .tarea.plegado h3 { font-size: 11px; margin: 0; max-width: 22vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.tactil .tarea.plegado h3::after { content: " ▸"; color: var(--oro); }
+body.tactil .tarea:not(.plegado) h3::after { content: " ▾"; color: var(--tenue); font-weight: 400; }
+body.tactil .pista:not(.plegado) h4::after { content: "▾ tocar para plegar"; color: var(--tenue); font-weight: 400; text-transform: none; letter-spacing: 0; }
+body.tactil .pista.plegado h4 { margin: 0; font-size: 11px; }
+body.tactil #hud.sin-cuadros .tarea, body.tactil #hud.sin-cuadros .pista, body.tactil #hud.sin-cuadros .mensaje, body.tactil #hud.sin-cuadros .reaccion { display: none; }
+body.tactil .bt.mini { padding: 0 5px; font-size: 10px; }
+body.tactil .pista { bottom: auto; }

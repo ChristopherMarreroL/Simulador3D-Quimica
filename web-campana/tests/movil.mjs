@@ -22,6 +22,16 @@ await page.getByRole('button', { name: 'Entrar al laboratorio' }).tap();
 await page.waitForTimeout(600);
 r.activo = await page.evaluate(() => window.__campana.jugador.activo);
 await foto('02_entrada');
+// Cuadros: se pliegan al tocarlos y «Ocultar» los quita todos.
+const clase = (k, c) => page.evaluate(({ k, c }) => document.querySelector(k).classList.contains(c), { k, c });
+await page.locator('[data-k=tarea]').tap(); await page.locator('[data-k=pista]').tap(); await page.waitForTimeout(200);
+r.plegados = [await clase('[data-k=tarea]', 'plegado'), await clase('[data-k=pista]', 'plegado')];
+await foto('02b_cuadros_plegados');
+await page.locator('[data-t=cuadros]').tap(); await page.waitForTimeout(200);
+r.ocultos = await page.evaluate(() => getComputedStyle(document.querySelector('[data-k=tarea]')).display === 'none' && getComputedStyle(document.querySelector('[data-k=pista]')).display === 'none');
+await foto('02c_sin_cuadros');
+await page.locator('[data-t=cuadros]').tap(); await page.locator('[data-k=tarea]').tap(); await page.locator('[data-k=pista]').tap(); await page.waitForTimeout(200);
+r.desplegados = [!(await clase('[data-k=tarea]', 'plegado')), !(await clase('[data-k=pista]', 'plegado'))];
 // Palanca: empujar hacia delante 1,2 s.
 const p0 = await page.evaluate(() => window.__campana.jugador.camara.position.toArray());
 const pal = await centro('[data-t=palanca]');
