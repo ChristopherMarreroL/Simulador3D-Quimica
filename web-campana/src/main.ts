@@ -74,6 +74,13 @@ async function arrancar() {
   const abrirMisiones = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); } hud.abrirMisiones(); };
   const pausar = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); hud.pausa(true, false); } else document.exitPointerLock(); };
   partida.alAbrirMisiones = abrirMisiones;
+  // N: si hay una mezcla sin anotar en el matraz, la guarda; después abre el cuaderno.
+  const abrirCuaderno = () => {
+    const h = useHood.getState();
+    if (h.mixture.additions.length && !h.savedAt) partida.anotar();
+    if (tactil) { jugador.activo = false; partida.soltarUsar(); }
+    hud.abrirCuaderno();
+  };
   escena.add(objetos.raiz);
   await jugador.cargarManos();
   // Primera compilación de los materiales y captura de los reflejos del cuarto.
@@ -84,14 +91,14 @@ async function arrancar() {
     usar: (pulsado, tecla) => { if (pulsado) partida.pulsarUsar(tecla); else partida.soltarUsar(); },
     dejar: () => partida.dejar(),
     mano: m => partida.cambiarMano(m),
-    anotar: () => partida.anotar(),
+    anotar: abrirCuaderno,
     misiones: abrirMisiones,
     pistas: () => hud.alternarPistas(),
     pausa: pausar,
   });
   const mandos = tactil ? montarTactil(document.getElementById('hud')!, lienzo, jugador, {
     usar: (pulsado, tecla) => { if (pulsado) partida.pulsarUsar(tecla); else partida.soltarUsar(); },
-    dejar: () => partida.dejar(), mano: m => partida.cambiarMano(m), misiones: abrirMisiones, pistas: () => hud.alternarPistas(), pausa: pausar,
+    dejar: () => partida.dejar(), mano: m => partida.cambiarMano(m), misiones: abrirMisiones, cuaderno: abrirCuaderno, pistas: () => hud.alternarPistas(), pausa: pausar,
   }) : null;
   hud.listo();
 

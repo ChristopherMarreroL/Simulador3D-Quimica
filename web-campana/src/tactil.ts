@@ -17,7 +17,7 @@ const CAMBIOS: [RegExp, string][] = [
   [/[Mm]antén pulsado el clic izquierdo/g, 'Mantén el dedo en el botón MANTENER'],
   [/Mantén el clic/g, 'Mantén MANTENER'], [/mantén el clic/g, 'mantén MANTENER'], [/suelta el clic/g, 'suelta el botón'],
   [/[Pp]ulsa la tecla ([12])/g, 'Toca «Mano $1»'], [/Tecla ([12]), luego E/g, 'Mano $1 y USAR'], [/con 1 \/ 2/g, 'con los botones Mano 1 / Mano 2'],
-  [/pulsa la tecla E/g, 'toca USAR'], [/pulsa E \(o pulsa N\)/g, 'toca USAR'], [/[Pp]ulsa E/g, 'Toca USAR'], [/pulsa Q/g, 'toca DEJAR'],
+  [/pulsa la tecla E/g, 'toca USAR'], [/pulsa E \(o pulsa N para abrir el cuaderno\)/g, 'toca USAR (o «Cuaderno» arriba)'], [/con N con la mezcla/g, 'con el botón «Cuaderno» con la mezcla'], [/[Pp]ulsa E/g, 'Toca USAR'], [/pulsa Q/g, 'toca DEJAR'],
   [/También puedes pulsar M desde cualquier sitio/g, 'También puedes tocar «Misiones» arriba'], [/Pulsa M /g, 'Toca «Misiones» '], [/o pulsa <b>M<\/b>/g, 'o toca <b>Misiones</b>'], [/\(o pulsa M\)/g, '(o toca «Misiones»)'],
   [/<b>M<\/b> · /g, '<b>Misiones</b> · '], [/ · E( ·|$|<)/g, ' · USAR$1'], [/ · Q( ·|$|<)/g, ' · DEJAR$1'], [/^E · /g, 'USAR · '], [/>E · /g, '>USAR · '], [/^Q · /g, 'DEJAR · '], [/>Q · /g, '>DEJAR · '],
   [/   E · /g, '   USAR · '], [/\(E\)/g, '(USAR)'], [/con Q\b/g, 'con DEJAR'],
@@ -26,7 +26,7 @@ export const adaptarTexto = (t: string) => CAMBIOS.reduce((s, [de, a]) => s.repl
 
 export interface AccionesTactiles {
   usar: (pulsado: boolean, tecla: boolean) => void; dejar: () => void; mano: (m: Hand) => void;
-  misiones: () => void; pistas: () => void; pausa: () => void;
+  misiones: () => void; cuaderno: () => void; pistas: () => void; pausa: () => void;
 }
 
 export function montarTactil(raiz: HTMLElement, lienzo: HTMLElement, jugador: Jugador, acciones: AccionesTactiles) {
@@ -42,7 +42,7 @@ export function montarTactil(raiz: HTMLElement, lienzo: HTMLElement, jugador: Ju
     </div>
     <div class="barra-tactil">
       <button data-t="mano1" class="bt mini">Mano 1</button><button data-t="mano2" class="bt mini">Mano 2</button>
-      <button data-t="misiones" class="bt mini">Misiones</button><button data-t="pistas" class="bt mini">Pistas</button><button data-t="pausa" class="bt mini">II</button>
+      <button data-t="misiones" class="bt mini">Misiones</button><button data-t="cuaderno" class="bt mini">Cuaderno</button><button data-t="pistas" class="bt mini">Pistas</button><button data-t="pausa" class="bt mini">II</button>
     </div>
     <div class="gira">Gira el teléfono a horizontal para jugar</div>`;
   raiz.append(capa);
@@ -77,6 +77,7 @@ export function montarTactil(raiz: HTMLElement, lienzo: HTMLElement, jugador: Ju
   toque('mano1', () => acciones.mano('left'));
   toque('mano2', () => acciones.mano('right'));
   toque('misiones', acciones.misiones);
+  toque('cuaderno', acciones.cuaderno);
   toque('pistas', acciones.pistas);
   toque('pausa', acciones.pausa);
   const verter = el('verter');

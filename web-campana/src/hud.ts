@@ -18,6 +18,7 @@ export class Hud {
   private ultimo = '';
   private ultimaReaccion = '';
   private misionesAbierto = false;
+  private cuadernoAbierto = false;
   private misionesDesde = 0;
   constructor(raiz: HTMLElement, calidad: Calidad, private acciones: { empezar: () => void; calidad: (c: Calidad) => void; reiniciar: () => void; elegir: (id: string | null) => void }) {
     this.raiz = raiz;
@@ -41,14 +42,18 @@ export class Hud {
         <ul class="controles">
           <li><b>WASD</b> caminar · <b>Mayús</b> rápido · <b>ratón</b> mirar</li>
           <li><b>E</b> o <b>clic</b> usar · <b>mantener el clic</b> para verter de un frasco · <b>Q</b> dejar</li>
-          <li><b>1 / 2</b> mano izquierda / derecha · <b>M</b> misiones · <b>H</b> pistas · <b>N</b> anotar · <b>clic derecho</b> mirar de cerca</li>
+          <li><b>1 / 2</b> mano izquierda / derecha · <b>M</b> misiones · <b>H</b> pistas · <b>N</b> cuaderno · <b>clic derecho</b> mirar de cerca</li>
           <li><b>Esc</b> pausa</li>
         </ul>
         <ul class="controles tactiles">
           <li><b>Palanca izquierda</b> caminar · <b>arrastra el dedo</b> por la pantalla para mirar</li>
           <li><b>USAR</b> coger, verter la probeta, anotar · <b>MANTENER</b> llenar, pesar o gotear · <b>DEJAR</b> soltar el frasco</li>
-          <li>Apunta con el punto del centro de la pantalla. Arriba: manos, misiones, pistas y pausa.</li>
+          <li>Apunta con el punto del centro de la pantalla. Arriba: manos, misiones, cuaderno, pistas y pausa.</li>
         </ul>
+      </section>
+      <section class="misiones cuaderno" data-k="cuaderno" hidden>
+        <header><h2>Cuaderno de laboratorio</h2><button data-k="cerrarCuaderno" class="boton secundario">Volver al laboratorio</button></header>
+        <div class="lista" data-k="listaCuaderno"></div>
       </section>
       <section class="misiones" data-k="misiones" hidden>
         <header><h2>Tablero de misiones</h2><button data-k="cerrarMisiones" class="boton secundario">Volver al laboratorio</button></header>
@@ -58,6 +63,7 @@ export class Hud {
         <h2>Pausa</h2>
         <button data-k="continuar" class="boton">Continuar</button>
         <button data-k="verMisiones" class="boton secundario">Misiones y mezcla libre</button>
+        <button data-k="verCuaderno" class="boton secundario">Cuaderno de laboratorio</button>
         <label>Calidad gráfica
           <select data-k="calidad">${(Object.keys(PERFILES) as Calidad[]).map(c => `<option value="${c}" ${c === calidad ? 'selected' : ''}>${PERFILES[c].texto}</option>`).join('')}</select>
         </label>
@@ -69,6 +75,10 @@ export class Hud {
     this.el.continuar.addEventListener('click', acciones.empezar);
     this.el.reiniciar.addEventListener('click', () => { acciones.reiniciar(); acciones.empezar(); });
     this.el.verMisiones.addEventListener('click', () => this.abrirMisiones());
+    this.el.verCuaderno.addEventListener('click', () => this.abrirCuaderno());
+    this.el.cerrarCuaderno.addEventListener('click', () => { this.cuadernoAbierto = false; acciones.empezar(); });
+    // Las anotaciones se guardan al escribir, en el mismo almacenamiento que el prototipo web (experimenta.hood.v1).
+    this.el.listaCuaderno.addEventListener('input', e => { const t = e.target as HTMLTextAreaElement; if (t.dataset.nota) useHood.getState().annotate(t.dataset.nota, t.value); });
     this.el.cerrarMisiones.addEventListener('click', () => { this.misionesAbierto = false; acciones.empezar(); });
     this.el.listaMisiones.addEventListener('click', e => {
       // En táctil, el mismo toque que abre el tablero no debe elegir la misión que queda bajo el dedo.
@@ -90,8 +100,31 @@ export class Hud {
   progreso(t: string) { this.el.progreso.textContent = t; }
   listo() { this.el.cargando.hidden = true; this.el.portada.hidden = false; }
   /** Abre el tablero de misiones (suelta el ratón para poder elegir). */
+  /** Abre el cuaderno: un ensayo por tarjeta, con el resultado principal, la anotación y los cálculos desplegables. */
+  abrirCuaderno() {
+    this.cuadernoAbierto = true; this.misionesAbierto = false;
+    const registros = [...useHood.getState().records].reverse();
+    this.el.listaCuaderno.innerHTML = registros.length ? registros.map(r => {
+      const titulos = [...new Set(r.log.flatMap(l => l.titles))], ecuaciones = [...new Set(r.log.flatMap(l => l.equations))];
+      const principal = titulos[0] ?? (r.solids.length ? `Sólido: ${r.solids.join(', ')}` : r.gases.length ? `Gas: ${r.gases.map(g => g.label).join(', ')}` : 'Sin cambios según el modelo');
+      const fecha = new Date(r.at).toLocaleString('es', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      return `<article class="mision ensayo"><i>${esc(fecha)}</i><b>${esc(principal)}</b>
+        <span>${r.additions.map(a => `${esc(amountText(a.reagent, a.amount))} de ${esc(reagents[a.reagent].name)}`).join(' + ')}</span>
+        <textarea data-nota="${esc(r.id)}" rows="2" placeholder="Escribe aquí tu observación…">${esc(r.observation)}</textarea>
+        <details><summary>Cálculos del modelo</summary>
+          <span>Volumen ${fmt(r.volumeMl)} mL · ${fmt(r.temperatureC)} °C · pH ${r.pH === null ? '—' : fmt(r.pH, 2)}</span>
+          ${r.solids.length ? `<span>Sólidos: ${esc(r.solids.join(', '))}</span>` : ''}
+          ${r.gases.length ? `<span>Gases: ${r.gases.map(g => `${esc(g.label)} ${fmt(g.mol * 1000, 2)} mmol`).join(', ')}</span>` : ''}
+          ${ecuaciones.map(e => `<span class="ecuacion">${esc(e)}</span>`).join('')}
+          ${titulos.slice(1).map(t => `<span>${esc(t)}</span>`).join('')}
+        </details></article>`;
+    }).join('') : '<p class="vacio">Todavía no hay ensayos anotados. Haz una mezcla en la campana y anótala: apunta al matraz y pulsa E, o abre el cuaderno con N con la mezcla aún en el matraz.</p>';
+    this.el.listaCuaderno.innerHTML = this.texto(this.el.listaCuaderno.innerHTML);
+    if (document.pointerLockElement) document.exitPointerLock();
+    this.pausa(true, false);
+  }
   abrirMisiones(completadas: Set<string> = this.completadas) {
-    this.misionesAbierto = true; this.misionesDesde = performance.now();
+    this.misionesAbierto = true; this.cuadernoAbierto = false; this.misionesDesde = performance.now();
     const actual = useHood.getState().recipe?.id;
     this.el.listaMisiones.innerHTML = `<button class="mision libre" data-mision="libre"><b>Mezcla libre</b><span>Combina cualquiera de los 27 reactivos y observa qué predice el modelo: color, gas, precipitado, pH y temperatura.</span></button>`
       + hoodRecipes.map(r => `<button class="mision ${completadas.has(r.id) ? 'hecha' : ''} ${actual === r.id ? 'actual' : ''}" data-mision="${r.id}">
@@ -101,10 +134,11 @@ export class Hud {
   }
   private completadas = new Set<string>();
   pausa(visible: boolean, primeraVez: boolean) {
-    if (!visible) this.misionesAbierto = false;
+    if (!visible) { this.misionesAbierto = false; this.cuadernoAbierto = false; }
     this.el.portada.hidden = !(visible && primeraVez);
     this.el.misiones.hidden = !(visible && !primeraVez && this.misionesAbierto);
-    this.el.pausa.hidden = !(visible && !primeraVez && !this.misionesAbierto);
+    this.el.cuaderno.hidden = !(visible && !primeraVez && this.cuadernoAbierto);
+    this.el.pausa.hidden = !(visible && !primeraVez && !this.misionesAbierto && !this.cuadernoAbierto);
     this.raiz.classList.toggle('en-pausa', visible);
   }
   fps(texto: string) { this.el.fps.textContent = texto; }

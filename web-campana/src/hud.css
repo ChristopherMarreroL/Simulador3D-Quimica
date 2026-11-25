@@ -159,3 +159,18 @@ body.tactil .pista { overflow-y: auto; pointer-events: auto; touch-action: pan-y
 body.tactil .tarea { z-index: 2; }
 body.tactil .aviso { max-width: 44vw; }
 body.tactil .aviso span { font-size: 11.5px; }
+
+.cuaderno .lista { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.ensayo { cursor: default; }
+.ensayo:hover { border-color: var(--borde); background: rgba(255, 255, 255, 0.05); }
+.ensayo textarea { width: 100%; margin-top: 6px; padding: 8px; font: 14px/1.4 "Segoe UI", system-ui, sans-serif; color: var(--tinta); background: rgba(0, 0, 0, 0.35); border: 1px solid var(--borde); border-radius: 6px; resize: vertical; user-select: text; -webkit-user-select: text; }
+.ensayo textarea:focus { outline: none; border-color: var(--oro); }
+.ensayo details { margin-top: 6px; display: grid; gap: 3px; }
+.ensayo details span { display: block; }
+.ensayo summary { cursor: pointer; color: var(--oro); font-size: 13px; }
+.cuaderno .vacio { color: var(--tenue); max-width: 520px; }
+body.tactil .cuaderno .lista { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+body.tactil .bt.mini { padding: 0 7px; font-size: 11px; }
+body.tactil .misiones .lista { touch-action: pan-y; }
+.misiones, .portada, .pausa, .cargando { z-index: 6; }
+#hud.en-pausa .tarea { visibility: hidden; }

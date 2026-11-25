@@ -91,7 +91,7 @@ export function calcularGuia(partida: Partida): Guia {
     return { ...base, etiqueta: `${add.amount} gotas`, medidor: { valor: gotas, meta: add.amount, unidad: 'gotas', decimales: 0 }, lineas: [...cambiar, `Lleva el gotero de ${reagents[add.reagent].name} a ${CAMPANA}.`, 'Apunta al matraz: el recipiente cónico de vidrio del centro.', `Mantén pulsado el clic izquierdo: cae una gota cada medio segundo. Suelta al llegar a ${add.amount}.`] };
   }
   if (paso.key === 'observe') return { ...base, etiqueta: 'Observa', lineas: [`Mira el matraz. Deberías ver: ${def.observe}`, 'La tarjeta de arriba explica la reacción y la pantalla verde da el pH y la temperatura.'] };
-  if (paso.key === 'save') return { ...base, etiqueta: 'Anotar · E', lineas: [`Has visto la reacción: ${def.observe}`, 'Apunta al matraz y pulsa E (o pulsa N) para anotarlo en el cuaderno.'] };
+  if (paso.key === 'save') return { ...base, etiqueta: 'Anotar · E', lineas: [`Has visto la reacción: ${def.observe}`, 'Apunta al matraz y pulsa E (o pulsa N para abrir el cuaderno) y quedará anotado.'] };
   if (paso.key === 'dispose') return { ...base, etiqueta: 'Residuos · E', lineas: [def.waste, 'Apunta al recipiente amarillo de RESIDUOS (en el suelo, al fondo a la derecha, bajo el tablero de misiones) y pulsa E.', enMano ? 'Antes o después, devuelve el envase de tu mano a la estantería con Q.' : 'Nunca se tira una mezcla por el fregadero.'] };
   return { ...base, lineas: [paso.detail] };
 }
