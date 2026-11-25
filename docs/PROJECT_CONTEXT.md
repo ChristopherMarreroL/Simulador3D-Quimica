@@ -463,7 +463,7 @@ El usuario pidió una versión para dispositivos móviles de lo publicado en Ver
 - Sin captura de ratón: `Jugador.activo` sustituye a la comprobación de `pointerLockElement`. Arranca en calidad Baja, pide pantalla completa y horizontal, y avisa de girar el teléfono en vertical.
 - Interfaz compacta en `hud.css` (`body.tactil`): solo el paso actual, pistas desplazables, y las instrucciones nombran los botones en vez de las teclas (`adaptarTexto`).
 - Comprobado con `web-campana/tests/movil.mjs` (emulación de teléfono 844 × 390 con toques reales por CDP): palanca, giro, protección, tablero, elegir misión, coger un frasco, llenar 20 mL manteniendo el dedo, verter y pausa, sin errores. `tests/teclado.mjs` y el recorrido de escritorio siguen pasando. **No se ha probado en un teléfono real** ni se ha medido su rendimiento.
-- Sin publicar todavía: el servidor local solo escucha en 127.0.0.1, así que para abrirlo en un teléfono hay que publicarlo.
+- **Publicado el 25 de noviembre de 2026**, a petición explícita del usuario, en https://labquimica3d.vercel.app (con todo lo posterior al día 20: ventana, material, viveza, guía y móvil). Comprobado contra esa URL: `tests/movil.mjs` completo sin errores y recorrido de escritorio de «Vinagre y bicarbonato» completo (86 FPS a 1080p en Media en esa pasada). Los tres commits locales siguen sin subir a GitHub: el push lo tiene que ejecutar el usuario (el sistema de permisos de la sesión lo bloquea).
 
 ## Continuidad entre sesiones
 
