@@ -1,8 +1,10 @@
 import { reagents, type ReagentId } from '../../src/chemistry/reagents';
+import { categoryColors, reagentIds } from '../../src/chemistry/reagents';
 import { hoodRecipes } from '../../src/experiments/hoodRecipes';
 import { amountText, useHood, type Hand } from '../../src/state/hood';
 import { useLab } from '../../src/state/lab';
 import { NOMBRES } from './objetos';
+import { explicar, mezclaDeConsulta, NIVELES, parejasQueReaccionan, SUSTANCIAS, type Explicacion } from './explicar';
 import type { Guia } from './guia';
 import type { Partida } from './partida';
 import { montarTabla } from './tabla';
@@ -20,6 +22,8 @@ export class Hud {
   private ultimaReaccion = '';
   private misionesAbierto = false;
   private cuadernoAbierto = false;
+  private pestana: 'ensayos' | 'consulta' | 'sustancias' = 'ensayos';
+  private consulta: (ReagentId | '')[] = ['hcl', 'naoh', ''];
   private tablaAbierta = false;
   private tabla: ReturnType<typeof montarTabla> | null = null;
   private misionesDesde = 0;
@@ -56,7 +60,9 @@ export class Hud {
       </section>
       <section class="misiones tabla-periodica" data-k="tabla" hidden tabindex="-1"></section>
       <section class="misiones cuaderno" data-k="cuaderno" hidden>
-        <header><h2>Cuaderno de laboratorio</h2><button data-k="cerrarCuaderno" class="boton secundario">Volver al laboratorio</button></header>
+        <header><h2>Cuaderno de laboratorio</h2>
+          <nav class="pestanas" data-k="pestanas"><button data-p="ensayos">Mis ensayos</button><button data-p="consulta">¿Qué pasa si mezclo…?</button><button data-p="sustancias">Sustancias</button></nav>
+          <button data-k="cerrarCuaderno" class="boton secundario">Volver al laboratorio</button></header>
         <div class="lista" data-k="listaCuaderno"></div>
       </section>
       <section class="misiones" data-k="misiones" hidden>
@@ -85,6 +91,12 @@ export class Hud {
     this.el.cerrarCuaderno.addEventListener('click', () => { this.cuadernoAbierto = false; acciones.empezar(); });
     // Las anotaciones se guardan al escribir, en el mismo almacenamiento que el prototipo web (experimenta.hood.v1).
     this.el.listaCuaderno.addEventListener('input', e => { const t = e.target as HTMLTextAreaElement; if (t.dataset.nota) useHood.getState().annotate(t.dataset.nota, t.value); });
+    this.el.pestanas.addEventListener('click', e => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-p]'); if (b) { this.pestana = b.dataset.p as Hud['pestana']; this.pintarCuaderno(); } });
+    this.el.listaCuaderno.addEventListener('change', e => { const s = e.target as HTMLSelectElement; if (s.dataset.c) { this.consulta[Number(s.dataset.c)] = s.value as ReagentId | ''; this.pintarCuaderno(); } });
+    this.el.listaCuaderno.addEventListener('click', e => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>('[data-par]');
+      if (b) { const [x, y] = b.dataset.par!.split(',') as ReagentId[]; this.consulta = [x, y, '']; this.pestana = 'consulta'; this.pintarCuaderno(); }
+    });
     this.el.cerrarMisiones.addEventListener('click', () => { this.misionesAbierto = false; acciones.empezar(); });
     this.el.listaMisiones.addEventListener('click', e => {
       // En táctil, el mismo toque que abre el tablero no debe elegir la misión que queda bajo el dedo.
@@ -122,26 +134,69 @@ export class Hud {
     this.pausa(true, false);
     this.el.tabla.focus();
   }
-  /** Abre el cuaderno: un ensayo por tarjeta, con el resultado principal, la anotación y los cálculos desplegables. */
+  /** Tarjeta explicada de una mezcla: el conjunto primero, cada sustancia por separado después y los números al final, plegados. */
+  private tarjeta(x: Explicacion, cabecera: string, mezcla: string, nota = '') {
+    const sello = (n: Explicacion['nivel']) => `<em class="sello ${n}">${NIVELES[n]}</em>`;
+    const parrafos = (xs: string[]) => xs.map(t => `<p>${esc(t)}</p>`).join('');
+    const d = x.datos;
+    return `<article class="mision ensayo"><i>${esc(cabecera)}</i><b>${esc(x.titulo)}</b><span class="mezcla">${esc(mezcla)}</span>
+      <section><h5>Qué pasó</h5>${parrafos(x.quePaso)}${x.resultado.length ? `<ul>${x.resultado.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</section>
+      <section class="riesgo ${x.nivel}"><h5>¿Es peligroso? ${sello(x.nivel)}</h5><ul>${x.peligro.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>
+      <section><h5>¿Es problemático?</h5><p>${esc(x.problema)}</p><p><strong>Cómo se desecha:</strong> ${esc(x.desecho)}</p></section>
+      <section><h5>¿Para qué sirve?</h5>${parrafos(x.sirve)}</section>
+      <details class="separado"${this.tactil ? '' : ' open'}><summary>Cada sustancia por separado</summary>
+        ${x.sustancias.map(s => `<div class="sust"><h6>${esc(s.nombre)} <small>${esc(s.cantidad)}</small> ${sello(s.nivel)}</h6><p><strong>Qué es:</strong> ${esc(s.queEs)}</p><p><strong>Para qué sirve:</strong> ${esc(s.sirve)}</p><p><strong>Riesgo:</strong> ${esc(s.riesgo)}</p></div>`).join('')}
+        ${x.productos.map(p => `<div class="sust formado"><h6>Se formó: ${esc(p.nombre)} ${sello(p.nivel)}</h6><p>${esc(p.nota)}</p></div>`).join('')}
+      </details>
+      ${nota}
+      <details><summary>Datos y cálculos del modelo</summary>
+        <span>Volumen final: ${fmt(d.volumen)} mL · Temperatura final: ${fmt(d.temperatura)} °C · pH: ${d.pH === null ? '—' : fmt(d.pH, 2)} (0 es muy ácido, 7 neutro, 14 muy básico)</span>
+        ${d.solidos.length ? `<span>Sólidos en el fondo: ${esc(d.solidos.join(', '))}</span>` : ''}
+        ${d.gases.length ? `<span>Gases desprendidos: ${esc(d.gases.join(', '))}</span>` : ''}
+        ${d.ecuaciones.length ? `<span>Ecuaciones químicas:</span>${d.ecuaciones.map(e => `<span class="ecuacion">${esc(e)}</span>`).join('')}` : ''}
+      </details></article>`;
+  }
+  private pintarCuaderno() {
+    const lista = this.el.listaCuaderno;
+    this.el.pestanas.querySelectorAll<HTMLElement>('[data-p]').forEach(b => b.classList.toggle('activa', b.dataset.p === this.pestana));
+    lista.className = `lista ${this.pestana}`;
+    const describir = (ads: { reagent: ReagentId; amount: number }[]) => ads.map(a => `${amountText(a.reagent, a.amount)} de ${reagents[a.reagent].name}`).join(' + ');
+    let html: string;
+    if (this.pestana === 'ensayos') {
+      const registros = [...useHood.getState().records].reverse();
+      html = registros.length ? registros.map(r => {
+        const x = explicar(r.additions);
+        const fecha = new Date(r.at).toLocaleString('es', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        return this.tarjeta(x, `${fecha} · ${x.mision ? 'Misión' : 'Práctica libre'}`, describir(r.additions),
+          `<label class="nota">Tu observación<textarea data-nota="${esc(r.id)}" rows="2" placeholder="Escribe aquí lo que viste…">${esc(r.observation)}</textarea></label>`);
+      }).join('') : '<p class="vacio">Todavía no hay ensayos anotados. Haz una mezcla en la campana y anótala: apunta al matraz y pulsa E, o abre el cuaderno con N con la mezcla aún en el matraz. Mientras tanto puedes consultar cualquier mezcla en «¿Qué pasa si mezclo…?» y leer la ficha de cada sustancia.</p>';
+    } else if (this.pestana === 'consulta') {
+      const opciones = (elegido: string, vacio: boolean) => `${vacio ? '<option value="">(nada más)</option>' : ''}${reagentIds.map(id => `<option value="${id}"${id === elegido ? ' selected' : ''}>${esc(reagents[id].name)}</option>`).join('')}`;
+      const ids = this.consulta.filter((id): id is ReagentId => !!id);
+      const ads = mezclaDeConsulta(ids);
+      html = `<div class="consulta"><p>Elige dos o tres sustancias y lee qué ocurriría, sin tener que hacer la mezcla.</p>
+        <div class="selectores"><select data-c="0" aria-label="Primera sustancia">${opciones(this.consulta[0], false)}</select><b>+</b><select data-c="1" aria-label="Segunda sustancia">${opciones(this.consulta[1], false)}</select><b>+</b><select data-c="2" aria-label="Tercera sustancia (opcional)">${opciones(this.consulta[2], true)}</select></div></div>
+        ${this.tarjeta(explicar(ads), 'Consulta · cantidades de ejemplo', describir(ads))}
+        <p class="vacio">El resultado puede cambiar con otras cantidades: por ejemplo, si sobra ácido o sobra base.</p>`;
+    } else {
+      const parejas = parejasQueReaccionan();
+      html = reagentIds.map(id => {
+        const r = reagents[id], f = SUSTANCIAS[id], con = parejas.get(id) ?? [];
+        return `<article class="mision ensayo sustancia"><i style="color:${categoryColors[r.category]}">${esc(r.category)}</i><b>${esc(r.name)} <em class="sello ${f.nivel}">${NIVELES[f.nivel]}</em></b>
+          <p><strong>Qué es:</strong> ${esc(f.queEs)}</p><p><strong>Para qué sirve:</strong> ${esc(f.sirve)}</p><p><strong>Riesgo:</strong> ${esc(f.riesgo)}</p>
+          ${r.kind === 'indicator' ? '<p class="con">No reacciona: solo cambia de color para avisar.</p>' : con.length
+            ? `<p class="con"><strong>Reacciona con</strong> (elige una para ver qué pasa):</p><div class="chips">${con.map(o => `<button data-par="${id},${o}">${esc(reagents[o].name)}</button>`).join('')}</div>`
+            : '<p class="con">No reacciona con ninguna otra sustancia de la estantería: solo diluye o disuelve.</p>'}</article>`;
+      }).join('');
+    }
+    lista.innerHTML = this.texto(html);
+    lista.scrollTop = 0;
+  }
+  /** Abre el cuaderno: tus ensayos explicados, la consulta de cualquier mezcla y la ficha de cada sustancia. */
   abrirCuaderno() {
     this.cuadernoAbierto = true; this.misionesAbierto = false; this.tablaAbierta = false;
-    const registros = [...useHood.getState().records].reverse();
-    this.el.listaCuaderno.innerHTML = registros.length ? registros.map(r => {
-      const titulos = [...new Set(r.log.flatMap(l => l.titles))], ecuaciones = [...new Set(r.log.flatMap(l => l.equations))];
-      const principal = titulos[0] ?? (r.solids.length ? `Sólido: ${r.solids.join(', ')}` : r.gases.length ? `Gas: ${r.gases.map(g => g.label).join(', ')}` : 'Sin cambios según el modelo');
-      const fecha = new Date(r.at).toLocaleString('es', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-      return `<article class="mision ensayo"><i>${esc(fecha)}</i><b>${esc(principal)}</b>
-        <span>${r.additions.map(a => `${esc(amountText(a.reagent, a.amount))} de ${esc(reagents[a.reagent].name)}`).join(' + ')}</span>
-        <textarea data-nota="${esc(r.id)}" rows="2" placeholder="Escribe aquí tu observación…">${esc(r.observation)}</textarea>
-        <details><summary>Cálculos del modelo</summary>
-          <span>Volumen ${fmt(r.volumeMl)} mL · ${fmt(r.temperatureC)} °C · pH ${r.pH === null ? '—' : fmt(r.pH, 2)}</span>
-          ${r.solids.length ? `<span>Sólidos: ${esc(r.solids.join(', '))}</span>` : ''}
-          ${r.gases.length ? `<span>Gases: ${r.gases.map(g => `${esc(g.label)} ${fmt(g.mol * 1000, 2)} mmol`).join(', ')}</span>` : ''}
-          ${ecuaciones.map(e => `<span class="ecuacion">${esc(e)}</span>`).join('')}
-          ${titulos.slice(1).map(t => `<span>${esc(t)}</span>`).join('')}
-        </details></article>`;
-    }).join('') : '<p class="vacio">Todavía no hay ensayos anotados. Haz una mezcla en la campana y anótala: apunta al matraz y pulsa E, o abre el cuaderno con N con la mezcla aún en el matraz.</p>';
-    this.el.listaCuaderno.innerHTML = this.texto(this.el.listaCuaderno.innerHTML);
+    this.pestana = 'ensayos';
+    this.pintarCuaderno();
     if (document.pointerLockElement) document.exitPointerLock();
     this.pausa(true, false);
   }

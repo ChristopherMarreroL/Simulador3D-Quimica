@@ -269,3 +269,48 @@ body.tactil .pista.plegado h4 { margin: 0; font-size: 11px; }
 body.tactil #hud.sin-cuadros .tarea, body.tactil #hud.sin-cuadros .pista, body.tactil #hud.sin-cuadros .mensaje, body.tactil #hud.sin-cuadros .reaccion { display: none; }
 body.tactil .bt.mini { padding: 0 5px; font-size: 10px; }
 body.tactil .pista { bottom: auto; }
+
+/* Cuaderno explicado: resumen en palabras, semáforo de riesgo, cada sustancia por separado y los números plegados. */
+.cuaderno .lista { grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); user-select: text; -webkit-user-select: text; }
+.cuaderno .lista.consulta { grid-template-columns: minmax(0, 760px); justify-content: center; }
+.pestanas { display: flex; gap: 6px; flex-wrap: wrap; margin-right: auto; }
+.pestanas button, .chips button { font: inherit; font-size: 13.5px; color: var(--tinta); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--borde); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.pestanas button.activa { background: var(--oro); color: #1a1408; border-color: var(--oro); font-weight: 600; }
+.ensayo { gap: 8px; }
+.ensayo .mezcla { color: var(--tenue); font-size: 13px; }
+.ensayo section, .ensayo .sust { display: grid; gap: 4px; padding: 8px 10px; background: rgba(0, 0, 0, 0.22); border-radius: 8px; border-left: 3px solid var(--borde); }
+.ensayo h5 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--oro); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ensayo h6 { margin: 0; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ensayo h6 small { color: var(--tenue); font-weight: 400; }
+.ensayo p, .ensayo li { margin: 0; font-size: 14px; line-height: 1.45; color: var(--tinta); }
+.ensayo ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.ensayo section ul li { color: #d5dae2; }
+.ensayo strong { color: #fff; font-weight: 600; }
+.sello { font-style: normal; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.sello.bajo { background: #1f6b3f; color: #d9ffe6; }
+.sello.precaucion { background: #8a6100; color: #fff1c9; }
+.sello.alto { background: #9c2222; color: #ffe0e0; }
+.ensayo .riesgo.bajo { border-left-color: #3fbf73; }
+.ensayo .riesgo.precaucion { border-left-color: #f0b429; }
+.ensayo .riesgo.alto { border-left-color: #f05252; }
+.ensayo .separado { display: grid; gap: 6px; }
+.ensayo .separado[open] > summary { margin-bottom: 4px; }
+.ensayo .sust.formado { border-left-color: var(--oro); }
+.ensayo .nota { display: grid; gap: 2px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--oro); }
+.ensayo .nota textarea { text-transform: none; letter-spacing: 0; }
+.ensayo.sustancia b { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ensayo .con { color: var(--tenue); font-size: 13px; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chips button { font-size: 12.5px; padding: 4px 10px; }
+.chips button:hover, .pestanas button:hover { border-color: var(--oro); }
+.consulta { display: grid; gap: 8px; }
+.consulta p { margin: 0; color: var(--tenue); }
+.selectores { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.selectores select { flex: 1 1 160px; min-width: 0; font: inherit; font-size: 14px; padding: 8px; color: var(--tinta); background: #1a1e26; border: 1px solid var(--borde); border-radius: 8px; }
+.selectores b { color: var(--oro); }
+body.tactil .cuaderno header { flex-wrap: wrap; gap: 6px; }
+body.tactil .cuaderno h2 { font-size: 16px; }
+body.tactil .pestanas button { padding: 5px 10px; font-size: 12px; }
+body.tactil .cuaderno .lista { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+body.tactil .cuaderno .lista.consulta { grid-template-columns: minmax(0, 1fr); }
+body.tactil .ensayo p, body.tactil .ensayo li { font-size: 13px; }

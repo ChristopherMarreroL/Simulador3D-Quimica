@@ -1,5 +1,6 @@
 // Comprueba el cuaderno de laboratorio en ordenador (tecla N) y en móvil emulado (botón «Cuaderno»): se abre, lista
-// el ensayo anotado con su resultado principal, guarda la anotación escrita y la conserva al volver a abrirlo.
+// el ensayo anotado explicado en palabras (qué pasó, peligro, problema, utilidad y cada sustancia por separado, con los
+// cálculos plegados), guarda la anotación y la conserva; y las pestañas de consulta de mezclas y fichas de sustancias.
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 const base = process.env.BASE_URL || 'http://127.0.0.1:5180/';
@@ -25,7 +26,26 @@ const leer = page => page.evaluate(() => ({
   principal: document.querySelector('[data-k=listaCuaderno] article b')?.textContent ?? '',
   nota: document.querySelector('[data-k=listaCuaderno] textarea')?.value ?? null,
   guardados: window.__campana.useHood.getState().records.length,
+  apartados: [...document.querySelectorAll('[data-k=listaCuaderno] article:first-of-type h5')].map(h => h.childNodes[0].textContent.trim()),
+  riesgo: document.querySelector('[data-k=listaCuaderno] article .riesgo .sello')?.textContent ?? '',
+  sustancias: [...document.querySelectorAll('[data-k=listaCuaderno] article:first-of-type .sust h6')].map(h => h.childNodes[0].textContent.trim()),
+  calculosPlegados: !document.querySelector('[data-k=listaCuaderno] article details:not(.separado)')?.open,
 }));
+// Pestañas: consulta de cualquier mezcla y ficha de cada sustancia.
+const pestanas = async (page, pulsar) => {
+  const r = {};
+  await pulsar(page.locator('[data-p=consulta]')); await page.waitForTimeout(200);
+  await page.locator('[data-c="0"]').selectOption('pbno3'); await page.locator('[data-c="1"]').selectOption('ki'); await page.waitForTimeout(200);
+  r.consulta = await page.evaluate(() => ({ titulo: document.querySelector('.lista.consulta article b')?.textContent, riesgo: document.querySelector('.lista.consulta .riesgo .sello')?.textContent, desecho: document.querySelector('.lista.consulta section:nth-of-type(3)')?.textContent.toLowerCase().includes('nunca al fregadero') }));
+  await page.screenshot({ path: `${salida}/${r.movil ? 'movil' : 'x'}_consulta_${page.viewportSize().width}.png` });
+  await pulsar(page.locator('[data-p=sustancias]')); await page.waitForTimeout(300);
+  r.fichas = await page.locator('.lista.sustancias article').count();
+  await page.screenshot({ path: `${salida}/sustancias_${page.viewportSize().width}.png` });
+  await pulsar(page.locator('[data-par="cu,agno3"]')); await page.waitForTimeout(300);
+  r.trasChip = await page.evaluate(() => ({ pestana: document.querySelector('.pestanas .activa')?.textContent, titulo: document.querySelector('.lista.consulta article b')?.textContent }));
+  await pulsar(page.locator('[data-p=ensayos]')); await page.waitForTimeout(200);
+  return r;
+};
 const resultado = {};
 
 { // Ordenador: tecla N.
@@ -37,12 +57,15 @@ const resultado = {};
   const adiciones = await mezclar(page);
   await page.keyboard.press('KeyN'); await page.waitForTimeout(400);
   const abierto = await leer(page);
+  await page.screenshot({ path: `${salida}/ordenador_resumen.png` });
   await page.locator('[data-k=listaCuaderno] textarea').first().fill('Precipitado blanco lechoso al añadir el cloruro.');
   await page.screenshot({ path: `${salida}/ordenador.png` });
+  const fichas = await pestanas(page, l => l.click());
+  await page.locator('[data-k=listaCuaderno] textarea').first().fill('Precipitado blanco lechoso al añadir el cloruro.');
   await page.getByRole('button', { name: 'Volver al laboratorio' }).first().click(); await page.waitForTimeout(400);
   const capturado = await page.evaluate(() => !!document.pointerLockElement);
   await page.keyboard.press('KeyN'); await page.waitForTimeout(400);
-  resultado.ordenador = { adiciones, abierto, capturadoAlVolver: capturado, alReabrir: await leer(page), errores };
+  resultado.ordenador = { adiciones, abierto, fichas, capturadoAlVolver: capturado, alReabrir: await leer(page), errores };
   await page.close();
 }
 { // Móvil emulado: botón «Cuaderno».
@@ -57,10 +80,12 @@ const resultado = {};
   const abierto = await leer(page);
   await page.locator('[data-k=listaCuaderno] textarea').first().fill('Nota desde el móvil.');
   await page.screenshot({ path: `${salida}/movil.png` });
+  const fichas = await pestanas(page, l => l.tap());
+  await page.locator('[data-k=listaCuaderno] textarea').first().fill('Nota desde el móvil.');
   await page.getByRole('button', { name: 'Volver al laboratorio' }).first().tap(); await page.waitForTimeout(400);
   const activo = await page.evaluate(() => window.__campana.jugador.activo);
   await page.locator('[data-t=cuaderno]').tap(); await page.waitForTimeout(400);
-  resultado.movil = { adiciones, abierto, activoAlVolver: activo, alReabrir: await leer(page), errores };
+  resultado.movil = { adiciones, abierto, fichas, activoAlVolver: activo, alReabrir: await leer(page), errores };
   await ctx.close();
 }
 console.log(JSON.stringify(resultado, null, 1));

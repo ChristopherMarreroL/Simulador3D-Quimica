@@ -479,6 +479,15 @@ El usuario señaló que el póster decía «la versión interactiva está en el 
 
 **Publicación.** El usuario indicó «publicado inmediatamente termines» durante esta tanda de correcciones; con esa indicación se publicaron la tabla y el ajuste móvil en https://labquimica3d.vercel.app el 25 de noviembre, comprobados contra la URL (`movil.mjs` a 760 × 300 y `tabla.mjs`, sin errores). Fuera de una indicación así, preguntar antes de publicar.
 
+## Cuaderno que explica en palabras (25 de noviembre de 2026)
+
+El usuario vio en el cuaderno «muchos números y cálculos y cosas raras» y pidió que todo se explique: en un resumen breve, si lo hecho es peligroso, si es problemático, para qué sirve, del conjunto y de cada sustancia por separado, para todas las combinaciones posibles en misiones y en práctica libre.
+
+- `web-campana/src/explicar.ts` no añade química: repite la mezcla con el modelo validado (`addReagent`) y traduce a lenguaje llano cada regla que puede dispararse (todas las de `rules`, en los dos sentidos), cada gas o sólido que puede aparecer y cada uno de los 27 reactivos. Si el modelo no predice nada lo dice («No reaccionan», con el aviso de que la realidad puede incluir reacciones que el modelo no tiene). Los textos de uso cotidiano y de riesgo son redacción propia de divulgación, no datos del modelo.
+- Tarjeta de cada ensayo: título en palabras, «Qué pasó», «¿Es peligroso?» con sello (riesgo bajo, precaución, peligroso), «¿Es problemático?» con cómo se desecha, «¿Para qué sirve?», «Cada sustancia por separado» (qué es, para qué sirve, riesgo, y lo que se formó), la observación del usuario y, plegados, «Datos y cálculos del modelo» (cumple la regla de cálculos completos desplegables).
+- Dos pestañas nuevas: «¿Qué pasa si mezclo…?» (dos o tres sustancias con cantidades de ejemplo, sin hacer la mezcla) y «Sustancias» (27 fichas con las parejas que reaccionan según el modelo, 71 en total).
+- Validación: `src/chemistry/explicar.test.ts` (entra en `npm test`) exige texto para cada regla, producto y reactivo, reconoce las 16 misiones y recorre las 3.303 mezclas de una, dos y tres sustancias sin huecos. `web-campana/tests/cuaderno.mjs` comprueba tarjeta y pestañas en ordenador y móvil emulado. Sin publicar todavía: pendiente de que el usuario lo pida.
+
 ## Continuidad entre sesiones
 
 Leer primero este archivo y `AGENTS.md`; consultar [ARQUITECTURA.md](ARQUITECTURA.md) antes de ampliar módulos y el contexto maestro para requisitos detallados. Verificar archivos y estado local de Git antes de hacer suposiciones sobre ramas, remotos o trabajo publicado. Actualizar este contexto cuando cambien decisiones, alcance, validaciones o próximos pasos; conservar el documento original como referencia histórica.
