@@ -174,3 +174,57 @@ body.tactil .bt.mini { padding: 0 7px; font-size: 11px; }
 body.tactil .misiones .lista { touch-action: pan-y; }
 .misiones, .portada, .pausa, .cargando { z-index: 6; }
 #hud.en-pausa .tarea { visibility: hidden; }
+
+.tabla-periodica { grid-template-rows: auto 1fr auto; gap: 10px; padding: 16px min(3vw, 40px); outline: none; }
+.tabla-periodica header { flex-wrap: wrap; justify-content: flex-start; }
+.tabla-periodica header h2 { margin-right: auto; }
+.tabla-periodica input, .tabla-periodica select { font: 14px "Segoe UI", system-ui, sans-serif; padding: 8px 10px; border-radius: 6px; background: #1a1e26; color: var(--tinta); border: 1px solid var(--borde); user-select: text; -webkit-user-select: text; }
+.tabla-periodica input { width: min(220px, 40vw); }
+.tp-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) min(330px, 30vw); gap: 14px; min-height: 0; }
+.tp-rejilla { display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); gap: 3px; align-content: start; overflow: auto; touch-action: pan-y; }
+.tp-celda { aspect-ratio: 1 / 1.08; min-width: 0; padding: 2px; border: 2px solid transparent; border-radius: 5px; color: #14161a; font: inherit; cursor: pointer; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; overflow: hidden; }
+.tp-celda small { font-size: clamp(7px, 0.7vw, 11px); justify-self: start; padding-left: 2px; }
+.tp-celda b { font-size: clamp(11px, 1.35vw, 22px); line-height: 1; }
+.tp-celda span { font-size: clamp(5px, 0.58vw, 9.5px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.tp-celda:hover, .tp-celda:focus-visible { border-color: #fff; outline: none; }
+.tp-celda.elegida { border-color: var(--oro); box-shadow: 0 0 0 2px var(--oro); z-index: 1; }
+.tp-celda.apagada { opacity: 0.18; }
+.tp-rejilla .hueco { font-size: clamp(7px, 0.7vw, 11px); color: var(--tenue); display: grid; place-content: center; }
+.tp-rejilla .separador { grid-column: 1 / -1; height: 8px; }
+.tp-ficha { overflow: auto; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--borde); border-radius: 10px; touch-action: pan-y; }
+.tp-ficha .simbolo { width: 92px; height: 92px; border-radius: 10px; color: #14161a; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; padding: 6px; }
+.tp-ficha .simbolo b { font-size: 40px; line-height: 1; }
+.tp-ficha .simbolo small { justify-self: start; }
+.tp-ficha .simbolo span { font-size: 12px; }
+.tp-ficha h3 { margin: 10px 0 0; font-size: 22px; }
+.tp-ficha .familia { margin: 2px 0 10px; color: var(--oro); font-size: 13px; }
+.tp-ficha dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13px; }
+.tp-ficha dt { color: var(--tenue); }
+.tp-ficha dd { margin: 0; text-align: right; }
+.tp-ficha .en-lab { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--borde); font-size: 13px; }
+.tp-ficha .en-lab ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+.tp-ficha .en-lab span, .tp-ficha .en-lab p { color: var(--tenue); }
+.tp-leyenda { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--tenue); }
+.tp-leyenda span { display: inline-flex; align-items: center; gap: 5px; }
+.tp-leyenda i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+body.tactil .tabla-periodica { padding: 8px 10px; gap: 6px; }
+body.tactil .tabla-periodica header h2 { font-size: 15px; }
+body.tactil .tabla-periodica input, body.tactil .tabla-periodica select { font-size: 12px; padding: 5px 6px; }
+body.tactil .tabla-periodica input { width: 120px; }
+body.tactil .tabla-periodica .boton { padding: 6px 12px; font-size: 12.5px; }
+body.tactil .tp-cuerpo { grid-template-columns: minmax(0, 1fr) min(230px, 30vw); gap: 8px; }
+body.tactil .tp-celda span { display: none; }
+body.tactil .tp-celda { aspect-ratio: 1 / 0.82; grid-template-rows: auto 1fr; }
+body.tactil .tp-ficha { padding: 8px; }
+body.tactil .tp-ficha .simbolo { width: 56px; height: 56px; }
+body.tactil .tp-ficha .simbolo b { font-size: 24px; }
+body.tactil .tp-ficha h3 { font-size: 16px; margin-top: 6px; }
+body.tactil .tp-ficha dl { font-size: 11px; }
+body.tactil .tp-leyenda { font-size: 10px; }
+body.tactil .tp-celda { aspect-ratio: 1 / 0.95; padding: 1px; border-width: 1px; }
+body.tactil .tp-celda small { font-size: 6.5px; line-height: 1; }
+body.tactil .tp-celda b { font-size: 11.5px; align-self: center; }
+body.tactil .tp-rejilla { gap: 2px; }
+body.tactil .tp-ficha .simbolo { width: 60px; height: 62px; padding: 4px; }
+body.tactil .tp-ficha .simbolo span { font-size: 9px; }
+body.tactil .tp-ficha .simbolo small { font-size: 9px; }

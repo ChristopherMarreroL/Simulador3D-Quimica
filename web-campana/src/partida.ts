@@ -38,6 +38,7 @@ export class Partida {
   /** Interacciones ambientales de la escena (devuelve el mensaje) y apertura del panel de misiones. */
   ambiente: (objetivo: string) => string | null = () => null;
   alAbrirMisiones: () => void = () => {};
+  alAbrirTabla: () => void = () => {};
 
   iniciar() {
     // start() manda al tutorial si no se ha hecho; las mesas del tutorial no están en este laboratorio.
@@ -66,6 +67,7 @@ export class Partida {
     const lab = useLab.getState(), hood = useHood.getState();
     const t = lab.target;
     if (t === 'recipe-board') { this.alAbrirMisiones(); return; }
+    if (t === 'amb:tabla') { this.alAbrirTabla(); return; }
     if (t?.startsWith('amb:')) { const m = this.ambiente(t); if (m) useLab.setState({ message: m }); return; }
     const sostenido = hood.heldIn(lab.hand);
     const destino: StreamTarget | null = t === 'hood' ? 'flask' : t === 'hood-cylinder' ? 'cylinder' : t === 'hood-balance' ? 'balance' : null;

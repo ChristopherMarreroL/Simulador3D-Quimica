@@ -5,6 +5,7 @@ import { categoryColors, reagents, shelfRows, type ReagentId } from '../../src/c
 import { POUR_MS, useHood, type Hand } from '../../src/state/hood';
 import { useLab } from '../../src/state/lab';
 import { Liquido, perfil } from './liquido';
+import { dibujarPoster } from './tabla';
 import { clamp, mezclar, rotulo, suave, ue } from './util';
 
 /**
@@ -427,14 +428,8 @@ export class Objetos {
     cartel(['GAS', 'Cierra la llave al terminar'], 0.3, 0.12, ue(-300, 345.2, 135), 0, { tam: 60, ...ambarillo });
     cartel(['ALMACÉN DE MATERIAL'], 0.9, 0.1, ue(-400, 808.6, 196), FRENTE, { tam: 50, fondo: '#eef0f2' });
     plano(lienzo2d(256, 256, c => { c.fillStyle = '#ffffff'; c.fillRect(0, 0, 256, 256); c.fillStyle = '#0b7a3b'; c.fillRect(96, 40, 64, 176); c.fillRect(40, 96, 176, 64); }), 0.26, 0.26, ue(590.8, 670, 156), DERECHA);
-    // Tabla periódica (esquema de 18 columnas por familias; la interactiva completa está en el prototipo web).
-    plano(lienzo2d(1024, 600, c => {
-      c.fillStyle = '#fbfbf8'; c.fillRect(0, 0, 1024, 600); c.fillStyle = '#1d1f24'; c.font = '700 40px "Segoe UI", Arial'; c.textAlign = 'center'; c.fillText('TABLA PERIÓDICA DE LOS ELEMENTOS', 512, 50);
-      const filas = ['H................He', 'LiBe..........BCNOFNe', 'NaMg..........AlSiPSClAr', 'KCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKr', 'RbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe', 'CsBa*HfTaWReOsIrPtAuHgTlPbBiPoAtRn', 'FrRa*RfDbSgBhHsMtDsRgCnNhFlMcLvTsOg'];
-      const color = (col: number, f: number) => col === 0 ? (f === 0 ? '#9fd3a8' : '#f4a48c') : col === 1 ? '#f7cf8a' : col === 17 ? '#b9a7e6' : col === 16 ? '#f2e08a' : col >= 12 ? (f + col > 17 ? '#a9d6c1' : '#9fd3a8') : '#a7c8ee';
-      filas.forEach((fila, f) => { const simbolos = fila.match(/[A-Z][a-z]?|\.|\*/g)!; simbolos.forEach((sm, col) => { if (sm === '.') return; const x = 26 + col * 54, y = 80 + f * 62; c.fillStyle = sm === '*' ? '#e3c3e6' : color(col, f); c.fillRect(x, y, 50, 58); c.strokeStyle = '#555'; c.strokeRect(x, y, 50, 58); c.fillStyle = '#1d1f24'; c.font = '600 24px "Segoe UI", Arial'; c.fillText(sm === '*' ? '…' : sm, x + 25, y + 38); }); });
-      c.font = '500 20px "Segoe UI", Arial'; c.fillStyle = '#555'; c.fillText('Lantánidos y actínidos (…) no se muestran en este esquema', 512, 560);
-    }), 1.4, 0.82, ue(205, 853.4, 160), FRENTE);
+    // Tabla periódica: póster con los 118 elementos (los mismos datos que la tabla interactiva que abre E).
+    plano(lienzo2d(1024, 600, c => dibujarPoster(c, 1024, 600)), 1.4, 0.82, ue(205, 853.4, 160), FRENTE);
     // Normas del laboratorio y pictogramas de peligro.
     plano(lienzo2d(512, 720, c => {
       c.fillStyle = '#f7f7f2'; c.fillRect(0, 0, 512, 720); c.fillStyle = '#14509a'; c.fillRect(0, 0, 512, 84); c.fillStyle = '#fff'; c.font = '700 34px "Segoe UI", Arial'; c.textAlign = 'center'; c.fillText('NORMAS DEL LABORATORIO', 256, 54);
@@ -502,7 +497,7 @@ export class Objetos {
     if (tipo === 'nevera') return 'Nevera de reactivos: nunca se guardan alimentos en un laboratorio. De exposición.';
     if (tipo === 'bombonas') return 'Bombonas de gas a presión: siempre sujetas a la pared y con el capuchón puesto. De exposición.';
     if (tipo === 'botiquin') return 'Botiquín de primeros auxilios. Ante cualquier accidente, avisa al responsable.';
-    if (tipo === 'tabla') return 'Tabla periódica: esquema por familias. La versión interactiva completa está en el prototipo web.';
+    if (tipo === 'tabla') return 'Tabla periódica interactiva.';
     if (tipo === 'material') return 'Vasos, matraces, probetas, embudos, morteros y tubos de ensayo: de exposición. El material de trabajo está en la campana.';
     return null;
   }

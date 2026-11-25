@@ -74,6 +74,8 @@ async function arrancar() {
   const abrirMisiones = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); } hud.abrirMisiones(); };
   const pausar = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); hud.pausa(true, false); } else document.exitPointerLock(); };
   partida.alAbrirMisiones = abrirMisiones;
+  const abrirTabla = () => { if (tactil) { jugador.activo = false; partida.soltarUsar(); } hud.abrirTabla(); };
+  partida.alAbrirTabla = abrirTabla;
   // N: si hay una mezcla sin anotar en el matraz, la guarda; después abre el cuaderno.
   const abrirCuaderno = () => {
     const h = useHood.getState();
@@ -92,6 +94,7 @@ async function arrancar() {
     dejar: () => partida.dejar(),
     mano: m => partida.cambiarMano(m),
     anotar: abrirCuaderno,
+    tabla: abrirTabla,
     misiones: abrirMisiones,
     pistas: () => hud.alternarPistas(),
     pausa: pausar,
